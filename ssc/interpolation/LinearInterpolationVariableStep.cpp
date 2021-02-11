@@ -19,18 +19,10 @@ class Linear
         {
         }
 
+        Linear(const Linear&) = default;
+
         Linear(const double& slope_, const double& intersection_with_origin_) : slope(slope_), intersection_with_origin(intersection_with_origin_)
         {
-        }
-
-        Linear& operator=(const Linear& rhs)
-        {
-            if (this != &rhs)
-            {
-                slope = rhs.slope;
-                intersection_with_origin = rhs.intersection_with_origin;
-            }
-            return *this;
         }
 
         double slope;

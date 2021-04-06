@@ -8,46 +8,40 @@
 #ifndef TEST_SYSTEMS_HPP_
 #define TEST_SYSTEMS_HPP_
 
+#include "ssc/solver/ContinuousSystem.hpp"
+
 typedef std::vector<double> StateType;
 
-struct SimpleODE
+struct SimpleODE : public ssc::solver::ContinuousSystem
 {
-    SimpleODE(const StateType& x0) : state(x0)
-    {
-    }
+    SimpleODE(const StateType &x0) { state = x0; }
 
-    void operator()(const StateType &x, StateType &dxdt, double )
+    void operator()(const StateType &x, StateType &dxdt, double)
     {
         state = x;
-        dxdt[0] = 2;//*t;//2*x[0];
+        dxdt[0] = 2; //*t;//2*x[0];
     }
 
-    void update_discrete_states()
-    {
-    }
-
-    void update_continuous_states()
-    {
-    }
-
-    StateType state;
+    void initialize_system_outputs_before_first_observation() {}
+    void set_discrete_state(const std::string &, const double) {}
+    double get_input_value(const std::string &) const { return -1; }
+    double get_state_value(const std::string &) const { return -1; }
 };
 
-struct QuadraticODE
+struct QuadraticODE : public ssc::solver::ContinuousSystem
 {
-    QuadraticODE(const StateType& x0) : state(x0)
-    {
-    }
+    QuadraticODE(const StateType &x0) { state = x0; }
 
     void operator()(const StateType &x, StateType &dxdt, double t)
     {
         state = x;
-        dxdt[0] = 2*t;
+        dxdt[0] = 2 * t;
     }
 
-    StateType state;
+    void initialize_system_outputs_before_first_observation() {}
+    void set_discrete_state(const std::string &, const double) {}
+    double get_input_value(const std::string &) const { return -1; }
+    double get_state_value(const std::string &) const { return -1; }
 };
-
-
 
 #endif /* TEST_SYSTEMS_HPP_ */

@@ -9,8 +9,7 @@
 
 #include <functional> // Otherwise CLang issues an error (bind.hpp:36:14: error: ‘std::bind’ has not been declared)
 #include "ssc/solver/Observers.hpp"
-#include "ssc/solver/DefaultScheduler.hpp"
-#include "ssc/solver/detection_of_state_update_methods.hpp"
+#include "ssc/solver/Scheduler.hpp"
 #include "ssc/solver/solve.hpp"
 #include "test_systems.hpp"
 
@@ -49,8 +48,9 @@ TEST_F(ODEintTests, linear)
     SimpleODE system(x0);
     double t0 = 0.0 , tend = 10.0 , dt = 1;
 
-    VectorObserver<SimpleODE> observer;
-    quicksolve<EulerStepper>(system, t0, tend, dt, observer);
+    VectorObserver observer;
+    ssc::solver::Scheduler scheduler(t0, tend, dt);
+    quicksolve<EulerStepper,SimpleODE>(system, scheduler, observer);
 //! [ODEintTests example]
 
 //! [ODEintTests expected output]
@@ -72,8 +72,9 @@ TEST_F(ODEintTests, linear_with_adaptive_RK_Cash_Karp)
     SimpleODE system(x0);
     double t0 = 0.0 , tend = 10.0 , dt = 1;
 
-    VectorObserver<SimpleODE> observer;
-    quicksolve<RKCK>(system, t0, tend, dt, observer);
+    VectorObserver observer;
+    ssc::solver::Scheduler scheduler(t0, tend, dt);
+    quicksolve<RKCK>(system, scheduler, observer);
 
     const std::vector<std::pair<double,double> > v = observer.get();
     ASSERT_EQ(11,v.size());
@@ -91,8 +92,9 @@ TEST_F(ODEintTests, quadratic_with_euler)
     const size_t N = 10;
     double t0 = 0.0 , tend = N , dt = 1;
 
-    VectorObserver<QuadraticODE> observer;
-    quicksolve<EulerStepper>(system, t0, tend, dt, observer);
+    VectorObserver observer;
+    ssc::solver::Scheduler scheduler(t0, tend, dt);
+    quicksolve<EulerStepper>(system, scheduler, observer);
 
     const std::vector<std::pair<double,double> > v = observer.get();
     ASSERT_EQ(N+1,v.size());
@@ -110,8 +112,9 @@ TEST_F(ODEintTests, quadratic_with_RK4)
     const size_t N = 10;
     double t0 = 0.0 , tend = N , dt = 1;
 
-    VectorObserver<QuadraticODE> observer;
-    quicksolve<RK4Stepper>(system, t0, tend, dt, observer);
+    VectorObserver observer;
+    ssc::solver::Scheduler scheduler(t0, tend, dt);
+    quicksolve<RK4Stepper>(system, scheduler, observer);
 
     const std::vector<std::pair<double,double> > v = observer.get();
     ASSERT_EQ(N+1,v.size());

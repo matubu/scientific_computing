@@ -8,86 +8,120 @@
 #ifndef SOLVE_HPP_
 #define SOLVE_HPP_
 
-#include "ssc/solver/DefaultEventHandler.hpp"
-#include "ssc/solver/DefaultScheduler.hpp"
-#include "ssc/solver/detection_of_state_update_methods.hpp"
+#include "ssc/solver/DiscreteSystem.hpp"
+#include "ssc/solver/EventHandler.hpp"
+#include "ssc/solver/Scheduler.hpp"
 
+#include "ssc/macros/tr1_macros.hpp"
 #include <boost/numeric/odeint/stepper/controlled_step_result.hpp>
+
+#include TR1INC(memory)
 
 namespace ssc
 {
     namespace solver
     {
-        template <typename StepperType,
-                  typename SystemType,
-                  typename ObserverType,
-                  typename SchedulerType,
-                  typename EventHandlerType>
-        void
-        solve_for_constant_step(SystemType& sys, ObserverType& observer, StepperType& stepper, SchedulerType& scheduler, EventHandlerType& event_handler)
+        template <typename StepperType, typename SystemType, typename ObserverType>
+        void solve_for_constant_step(SystemType &sys, ObserverType &observer, StepperType &stepper,
+                                     Scheduler &scheduler, EventHandler &event_handler)
         {
             const double tstart = scheduler.get_time();
-            observer.observe(sys,tstart);
-            int i = 0;
-            const double dt = scheduler.get_step();
-            while(scheduler.has_more_time_events())
+            sys.initialize_system_outputs_before_first_observation();
+            observer.observe(sys, tstart);
+            while (scheduler.has_more_time_events())
             {
+                const double dt = scheduler.get_step();
                 const double t = scheduler.get_time();
                 stepper.do_step(sys, sys.state, t, dt);
+                sys.force_states(sys.state, t);
                 if (event_handler.detected_state_events())
                 {
                     event_handler.locate_event();
                     event_handler.run_event_actions();
                 }
-                update<SystemType, can<SystemType>::update_discrete_and_continuous_states>::if_possible(sys);
-                scheduler.append_time_event(tstart + (++i)*dt);
+                const auto discrete_state_updaters = scheduler.get_discrete_state_updaters_to_run();
+                for (const auto state_updater : discrete_state_updaters)
+                {
+                    state_updater(scheduler, &sys);
+                }
+                scheduler.advance_to_next_time_event();
                 observer.observe(sys, scheduler.get_time());
             }
         }
 
-        template <typename StepperType,
-                  typename SystemType,
-                  typename ObserverType,
-                  typename SchedulerType,
-                  typename EventHandlerType>
-        void
-        solve_for_adaptive_step(SystemType& sys, ObserverType& observer, StepperType& stepper, SchedulerType& scheduler, EventHandlerType& event_handler)
+        template <typename StepperType, typename SystemType, typename ObserverType>
+        void solve_for_adaptive_step(SystemType &sys, ObserverType &observer, StepperType &stepper,
+                                     Scheduler &scheduler, EventHandler &event_handler)
         {
             const double tstart = scheduler.get_time();
-            observer.observe(sys,tstart);
-            while(scheduler.has_more_time_events())
+            sys.initialize_system_outputs_before_first_observation();
+            observer.observe(sys, tstart);
+            while (scheduler.has_more_time_events())
             {
                 const double t = scheduler.get_time();
                 const double dt = scheduler.get_step();
-                const boost::numeric::odeint::controlled_step_result res = stepper.try_step(sys, sys.state, t, dt);
+                const boost::numeric::odeint::controlled_step_result res
+                    = stepper.try_step(sys, sys.state, t, dt);
                 if (res == boost::numeric::odeint::success)
                 {
+                    sys.force_states(sys.state, t);
                     if (event_handler.detected_state_events())
                     {
                         event_handler.locate_event();
                         event_handler.run_event_actions();
                     }
-                    update<SystemType, can<SystemType>::update_discrete_and_continuous_states>::if_possible(sys);
-                    scheduler.append_time_event(t+dt);
+                    const auto discrete_state_updaters
+                        = scheduler.get_discrete_state_updaters_to_run();
+                    for (const auto state_updater : discrete_state_updaters)
+                    {
+                        state_updater(scheduler, &sys);
+                    }
+                    scheduler.advance_to_next_time_event();
                     observer.observe(sys, t);
                 }
                 else
                 {
-                    scheduler.append_time_event(t+dt);
+                    scheduler.add_time_event(t + dt / 2);
+                    scheduler.advance_to_next_time_event();
                 }
             }
         }
-
-        template <typename StepperType,
-                  typename SystemType,
-                  typename ObserverType>
-        void quicksolve(SystemType& sys, const double t0, const double tend, double dt, ObserverType& observer)
+        template <typename StepperType, typename SystemType, typename ObserverType>
+        void quicksolve(SystemType &sys, Scheduler &scheduler, ObserverType &observer)
         {
             StepperType stepper;
-            DefaultScheduler scheduler(t0, tend, dt);
-            DefaultEventHandler event_handler;
-            solve_for_constant_step<StepperType,SystemType,ObserverType,DefaultScheduler,DefaultEventHandler>(sys,observer,stepper,scheduler,event_handler);
+            EventHandler event_handler;
+            solve_for_constant_step<StepperType, SystemType>(sys, observer, stepper, scheduler,
+                                                             event_handler);
         }
+        typedef TR1(shared_ptr)<DiscreteSystem> DiscreteSystemPtr;
+
+        template <typename StepperType, typename SystemType, typename ObserverType>
+        void quicksolve(SystemType &sys, std::vector<DiscreteSystemPtr> &discrete_systems,
+                        Scheduler &scheduler, ObserverType &observer)
+        {
+            StepperType stepper;
+            EventHandler event_handler;
+            for (const auto &discrete_system : discrete_systems)
+            {
+                discrete_system->schedule_update(scheduler.get_t0(), scheduler);
+            }
+            solve_for_constant_step<StepperType, SystemType, ObserverType>(sys, observer, stepper,
+                                                                           scheduler, event_handler);
+        }
+
+        template <typename StepperType, typename SystemType, typename ObserverType>
+        void quicksolve(SystemType &sys, DiscreteSystem &discrete_system, Scheduler &scheduler,
+                        ObserverType &observer)
+        {
+            quicksolve<StepperType, SystemType, ObserverType>(
+                sys,
+                std::vector<DiscreteSystemPtr>(1,
+                                               std::make_shared<DiscreteSystem>(&discrete_system)),
+                scheduler,
+                observer);
+        }
+
     }
 }
 

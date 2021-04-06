@@ -11,6 +11,8 @@
 #include <sstream>
 #include <vector>
 
+#include "ssc/solver/ContinuousSystem.hpp"
+
 namespace ssc
 {
     namespace solver
@@ -33,17 +35,17 @@ namespace ssc
         {
             public:
                 NullObserver() {}
-                template <typename SystemType, typename StateType> void observe(const SystemType& , const double )
+                void observe(const ContinuousSystem& , const double )
                 {
 
                 }
         };
 
-        template <typename SystemType> class DefaultObserver
+        class DefaultObserver
         {
             public:
                 DefaultObserver(std::ostream& os_) : os(os_), initialized(false) {}
-                void observe(const SystemType& sys, const double t)
+                void observe(const ContinuousSystem& sys, const double t)
                 {
                     const std::vector<double> x = sys.state;
                     if (not(initialized))
@@ -76,11 +78,11 @@ namespace ssc
                 bool initialized;
         };
 
-        template <typename SystemType> class VectorObserver
+        class VectorObserver
         {
             public:
                 VectorObserver() : v(std::vector<std::pair<double,double> >()) {}
-                void observe(const SystemType& sys, const double t)
+                void observe(const ContinuousSystem& sys, const double t)
                 {
                     v.push_back(std::make_pair(t, sys.state[0]));
                 }

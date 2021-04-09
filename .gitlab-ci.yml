@@ -16,7 +16,7 @@ lint:
    script:
      - make lint
 
-build:windows:
+Windows 64 bits with GCC POSIX threads:
    stage: build
    script:
      - make windows_posixthreads
@@ -25,11 +25,29 @@ build:windows:
      paths:
      - ssc.zip
 
-build debian 10 with gcc 8:
+Windows 64 bits with GCC 5.4.0 win32 threads:
+   stage: build
+   script:
+     - make windows_win32threads
+     - mv ssc/build_win32threads/ssc.zip .
+   artifacts:
+     paths:
+     - ssc.zip
+
+Debian 10 with GCC 8:
    stage: build
    script:
      - make debian_10_release_gcc_8
      - mv ssc/build_deb10/ssc.deb .
+   artifacts:
+     paths:
+     - ssc.deb
+
+Debian 9 with GCC 6:
+   stage: build
+   script:
+     - make debian_9_release_gcc_6
+     - mv ssc/build_deb9/ssc.deb .
    artifacts:
      paths:
      - ssc.deb

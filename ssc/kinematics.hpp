@@ -1,0 +1,36 @@
+/*Le présent logiciel est une connaissance propre de SIREHNA, au sens de l'article 2 de
+l'Accord-Cadre de Propriété Intellectuelle (Annexe à la convention pluriannuelle avec l'IRT).
+
+On en rappelle ici les paragraphes 5.2.4 et 5.2.5 :
+"(...) l'utilisation de la décompilation, du reverse engineering ou de toute autre méthode permettant
+de retrouver les codes sources à partir des exécutables est strictement prohibée sauf à obtenir
+l'autorisation écrite préalable du Membre ou de l'IRT titulaire de ladite Connaissance Propre."
+
+"En dehors des cas précités un Membre ou l'IRT peut opposer à un autre Membre ou à l'IRT ses
+Connaissances Propres conformément à la loi, rien dans ce qui précède ne pouvant être interprété
+comme une limitation des droits d'un Membre ou de l'IRT d'obtenir réparation du préjudice causé par
+l'utilisation non consentie d'une de ses Connaissances Propres par un Membre, par l'IRT dans tous
+les cas qui ne sont pas explicitement prévus dans l'ACPI, cette réparation pouvant être obtenue par
+toutes les voies de droit appropriées."
+
+(c) SIREHNA 2014-2015.
+*/
+#ifndef kinematics_guard
+#define kinematics_guard
+
+#include "ssc/kinematics/EulerAngles.hpp"
+#include "ssc/kinematics/KinematicTree.hpp"
+#include "ssc/kinematics/Kinematics.hpp"
+#include "ssc/kinematics/KinematicsException.hpp"
+#include "ssc/kinematics/Point.hpp"
+#include "ssc/kinematics/PointMatrix.hpp"
+#include "ssc/kinematics/RotationMatrix.hpp"
+#include "ssc/kinematics/Transform.hpp"
+#include "ssc/kinematics/UnsafeWrench.hpp"
+#include "ssc/kinematics/Velocity.hpp"
+#include "ssc/kinematics/Wrench.hpp"
+#include "ssc/kinematics/coriolis_and_centripetal.hpp"
+#include "ssc/kinematics/rotation_matrix_builders.hpp"
+
+
+#endif

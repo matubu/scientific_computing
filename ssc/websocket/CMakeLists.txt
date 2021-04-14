@@ -33,7 +33,6 @@ IF(USE_BOOST_FOR_WEBSOCKETPP)
     IF(WIN32)
         # http://msdn.microsoft.com/en-us/library/windows/desktop/aa383745%28v=vs.85%29.aspx
         # http://boost.2283326.n4.nabble.com/boost-asio-UnregisterWaitEx-RegisterWaitForSingleObject-has-not-been-declared-td4633963.html
-        ADD_DEFINITIONS(-D_WIN32_WINNT=0x0501)
         ADD_DEFINITIONS(-DWINVER=0x0501)
     ENDIF()
     ADD_DEFINITIONS(-D_WEBSOCKETPP_NO_CPP11_NULLPTR_)

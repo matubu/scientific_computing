@@ -6,3 +6,4 @@ install*
 .project
 .cproject
 .vagrant
+/*.hpp

@@ -37,9 +37,9 @@ struct ContinuousSystem : public ssc::solver::ContinuousSystem
 {
     ContinuousSystem(const std::vector<double> &x0) { state = x0; }
 
-    void operator()(const std::vector<double> &, std::vector<double> &dx_dt, double)
+    void dx_dt(const std::vector<double> &, std::vector<double> &dxdt, double)
     {
-        dx_dt[0] = 1;
+        dxdt[0] = 1;
     }
 
     void initialize_system_outputs_before_first_observation() {}

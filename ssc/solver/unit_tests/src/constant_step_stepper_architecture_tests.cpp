@@ -47,8 +47,8 @@ TEST_F(
     EXPECT_CALL(mock, initialize_system_outputs_before_first_observation()).RetiresOnSaturation();
     EXPECT_CALL(mock, observe(_, _)).RetiresOnSaturation();
     EXPECT_CALL(mock, has_more_time_events()).RetiresOnSaturation();
-    EXPECT_CALL(mock, get_step()).RetiresOnSaturation();
     EXPECT_CALL(mock, get_time()).RetiresOnSaturation();
+    EXPECT_CALL(mock, get_step()).RetiresOnSaturation();
     EXPECT_CALL(mock, do_step(_, _, _, _)).RetiresOnSaturation();
     EXPECT_CALL(mock, force_states(_, _)).RetiresOnSaturation();
     EXPECT_CALL(mock, detected_state_events()).RetiresOnSaturation();
@@ -83,8 +83,8 @@ TEST_F(
     EXPECT_CALL(mock, initialize_system_outputs_before_first_observation()).RetiresOnSaturation();
     EXPECT_CALL(mock, observe(_, _)).RetiresOnSaturation();
     EXPECT_CALL(mock, has_more_time_events()).RetiresOnSaturation();
-    EXPECT_CALL(mock, get_step()).RetiresOnSaturation();
     EXPECT_CALL(mock, get_time()).RetiresOnSaturation();
+    EXPECT_CALL(mock, get_step()).RetiresOnSaturation();
     EXPECT_CALL(mock, do_step(_, _, _, _)).RetiresOnSaturation();
     EXPECT_CALL(mock, force_states(_, _)).RetiresOnSaturation();
     EXPECT_CALL(mock, detected_state_events()).RetiresOnSaturation();

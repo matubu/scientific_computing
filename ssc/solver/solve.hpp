@@ -16,7 +16,6 @@
 #include <boost/numeric/odeint/stepper/controlled_step_result.hpp>
 
 #include TR1INC(memory)
-
 namespace ssc
 {
     namespace solver
@@ -30,19 +29,21 @@ namespace ssc
             observer.observe(sys, tstart);
             while (scheduler.has_more_time_events())
             {
-                const double dt = scheduler.get_step();
                 const double t = scheduler.get_time();
+                
+                const auto discrete_state_updaters = scheduler.get_discrete_state_updaters_to_run();
+                for (const auto state_updater : discrete_state_updaters)
+                {
+                    state_updater(scheduler, &sys);
+                }
+                const double dt = scheduler.get_step();
                 stepper.do_step(sys, sys.state, t, dt);
+                
                 sys.force_states(sys.state, t);
                 if (event_handler.detected_state_events())
                 {
                     event_handler.locate_event();
                     event_handler.run_event_actions();
-                }
-                const auto discrete_state_updaters = scheduler.get_discrete_state_updaters_to_run();
-                for (const auto state_updater : discrete_state_updaters)
-                {
-                    state_updater(scheduler, &sys);
                 }
                 scheduler.advance_to_next_time_event();
                 observer.observe(sys, scheduler.get_time());

@@ -8,6 +8,7 @@
 #ifndef SOLVER_CONTINUOUSSYSTEM_HPP_
 #define SOLVER_CONTINUOUSSYSTEM_HPP_
 
+#include <limits>
 #include <string>
 #include <vector>
 
@@ -20,12 +21,18 @@ namespace ssc
           public:
             ContinuousSystem()
                 : state()
+                , cached_dx_dt()
+                , cached_t(std::numeric_limits<double>::lowest())
             {
             }
             virtual ~ContinuousSystem() = default;
-            virtual void operator()(const std::vector<double> &x, std::vector<double> &dx_dt,
+            virtual void dx_dt(const std::vector<double>& x, std::vector<double>& dxdt, const double t) = 0;
+            void operator()(const std::vector<double> &x, std::vector<double> &dxdt,
                                     const double t)
-                = 0;
+            {
+                dx_dt(x, dxdt, t);
+                cache_dx_dt(t, dxdt);
+            }
             /**
              * @brief Sets the state vector to predefined values.
              *
@@ -37,6 +44,10 @@ namespace ssc
              */
             virtual void force_states(std::vector<double> &, const double) const {}
             std::vector<double> state;
+            std::vector<double> get_latest_dx_dt() const
+            {
+                return cached_dx_dt;
+            }
 
             /**
              * @brief Give a chance to the system to initialize its outputs before observation.
@@ -64,6 +75,17 @@ https://gitlab.com/sirehna_naval_group/xdyn/-/commit/b3e624960e941d73a8b3823e9cb
             /** \brief Gets the value of state from the ContinuousSystem, needed by a DiscreteSystem.
              */
             virtual double get_state_value(const std::string &name) const = 0;
+
+        private:
+            void cache_dx_dt(const double t, const std::vector<double>& dx_dt)
+            {
+                if (t > cached_t)
+                {
+                    cached_dx_dt = dx_dt;
+                }
+            }
+            std::vector<double> cached_dx_dt;
+            double cached_t;
         };
     }
 }

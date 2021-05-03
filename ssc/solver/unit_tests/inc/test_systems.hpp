@@ -16,7 +16,7 @@ struct SimpleODE : public ssc::solver::ContinuousSystem
 {
     SimpleODE(const StateType &x0) { state = x0; }
 
-    void operator()(const StateType &x, StateType &dxdt, double)
+    void dx_dt(const StateType &x, StateType &dxdt, double)
     {
         state = x;
         dxdt[0] = 2; //*t;//2*x[0];
@@ -32,7 +32,7 @@ struct QuadraticODE : public ssc::solver::ContinuousSystem
 {
     QuadraticODE(const StateType &x0) { state = x0; }
 
-    void operator()(const StateType &x, StateType &dxdt, double t)
+    void dx_dt(const StateType &x, StateType &dxdt, double t)
     {
         state = x;
         dxdt[0] = 2 * t;

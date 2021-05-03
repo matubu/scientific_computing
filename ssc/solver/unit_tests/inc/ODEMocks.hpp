@@ -54,7 +54,7 @@ class SystemWithMock : public ssc::solver::ContinuousSystem
         : mock(mock_)
     {
     }
-    void operator()(const std::vector<double> &x, std::vector<double> &dx_dt, double t)
+    void dx_dt(const std::vector<double> &x, std::vector<double> &dx_dt, double t)
     {
         mock.model_function(x, dx_dt, t);
     }

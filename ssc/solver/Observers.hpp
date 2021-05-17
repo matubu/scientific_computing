@@ -8,10 +8,12 @@
 #ifndef OBSERVERS_HPP_
 #define OBSERVERS_HPP_
 
+#include <memory>
 #include <sstream>
 #include <vector>
 
 #include "ssc/solver/ContinuousSystem.hpp"
+#include "ssc/solver/DiscreteSystem.hpp"
 
 namespace ssc
 {
@@ -35,7 +37,7 @@ namespace ssc
         {
             public:
                 NullObserver() {}
-                void observe(const ContinuousSystem& , const double )
+                void observe(const ContinuousSystem& , const double, const std::vector<std::shared_ptr<ssc::solver::DiscreteSystem> >& )
                 {
 
                 }
@@ -45,7 +47,7 @@ namespace ssc
         {
             public:
                 DefaultObserver(std::ostream& os_) : os(os_), initialized(false) {}
-                void observe(const ContinuousSystem& sys, const double t)
+                void observe(const ContinuousSystem& sys, const double t, const std::vector<std::shared_ptr<ssc::solver::DiscreteSystem> >&)
                 {
                     const std::vector<double> x = sys.state;
                     if (not(initialized))
@@ -82,7 +84,7 @@ namespace ssc
         {
             public:
                 VectorObserver() : v(std::vector<std::pair<double,double> >()) {}
-                void observe(const ContinuousSystem& sys, const double t)
+                void observe(const ContinuousSystem& sys, const double t, const std::vector<std::shared_ptr<ssc::solver::DiscreteSystem> >&)
                 {
                     v.push_back(std::make_pair(t, sys.state[0]));
                 }

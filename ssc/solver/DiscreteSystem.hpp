@@ -49,6 +49,22 @@ namespace ssc
              */
             void schedule_update(const double t, Scheduler &scheduler);
 
+            /**
+             * @brief Returns the list of variables calculated by this system. Mainly used in case
+             * the continuous system is an xdyn Sim class which contains a DataSource instance.
+             * 
+             */
+            virtual std::vector<std::string> get_outputs() const;
+
+            /**
+             * @brief Get the name of the discrete system. By default, returns the 'default' string.
+             * This is when the continuous system is an xdyn Sim class which contains a DataSource 
+             * instance we wish to populate.
+             * 
+             * @return std::string 
+             */
+            virtual std::string get_name() const;
+
           private:
             DiscreteSystem();
             /**

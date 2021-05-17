@@ -45,7 +45,7 @@ TEST_F(
         seq; // Name is irrelevant: all expectations in its scope are expected to occur in sequence
     EXPECT_CALL(mock, get_time()).RetiresOnSaturation();
     EXPECT_CALL(mock, initialize_system_outputs_before_first_observation()).RetiresOnSaturation();
-    EXPECT_CALL(mock, observe(_, _)).RetiresOnSaturation();
+    EXPECT_CALL(mock, observe(_, _, _)).RetiresOnSaturation();
     EXPECT_CALL(mock, has_more_time_events()).RetiresOnSaturation();
     EXPECT_CALL(mock, get_time()).RetiresOnSaturation();
     EXPECT_CALL(mock, get_step()).RetiresOnSaturation();
@@ -56,11 +56,11 @@ TEST_F(
     EXPECT_CALL(mock, run_event_actions()).RetiresOnSaturation();
     EXPECT_CALL(mock, advance_to_next_time_event()).RetiresOnSaturation();
     EXPECT_CALL(mock, get_time()).RetiresOnSaturation();
-    EXPECT_CALL(mock, observe(_, _));
+    EXPECT_CALL(mock, observe(_, _, _));
     EXPECT_CALL(mock, has_more_time_events()).RetiresOnSaturation();
 
     solve_for_constant_step<ExplicitStepperWithMock, SystemWithMock, ObserverWithMock>(sys, observer, stepper,
-                                                                                       scheduler, event_handler);
+                                                                                       scheduler, event_handler, {});
 }
 
 TEST_F(
@@ -81,7 +81,7 @@ TEST_F(
         seq; // Name is irrelevant: all expectations in its scope are expected to occur in sequence
     EXPECT_CALL(mock, get_time()).RetiresOnSaturation();
     EXPECT_CALL(mock, initialize_system_outputs_before_first_observation()).RetiresOnSaturation();
-    EXPECT_CALL(mock, observe(_, _)).RetiresOnSaturation();
+    EXPECT_CALL(mock, observe(_, _, _)).RetiresOnSaturation();
     EXPECT_CALL(mock, has_more_time_events()).RetiresOnSaturation();
     EXPECT_CALL(mock, get_time()).RetiresOnSaturation();
     EXPECT_CALL(mock, get_step()).RetiresOnSaturation();
@@ -90,9 +90,9 @@ TEST_F(
     EXPECT_CALL(mock, detected_state_events()).RetiresOnSaturation();
     EXPECT_CALL(mock, advance_to_next_time_event()).RetiresOnSaturation();
     EXPECT_CALL(mock, get_time()).RetiresOnSaturation();
-    EXPECT_CALL(mock, observe(_, _));
+    EXPECT_CALL(mock, observe(_, _, _));
     EXPECT_CALL(mock, has_more_time_events()).RetiresOnSaturation();
 
     solve_for_constant_step<ExplicitStepperWithMock, SystemWithMock, ObserverWithMock>(sys, observer, stepper,
-                                                                                       scheduler, event_handler);
+                                                                                       scheduler, event_handler, {});
 }

@@ -26,6 +26,16 @@ void ssc::solver::DiscreteSystem::initialize(Scheduler &scheduler, ContinuousSys
     callback(scheduler, system);
 }
 
+std::vector<std::string> ssc::solver::DiscreteSystem::get_outputs() const
+{
+    return std::vector<std::string>();
+}
+
+std::string ssc::solver::DiscreteSystem::get_name() const
+{
+    return "default";
+}
+
 double ssc::solver::DiscreteSystem::get_date_of_next_update(const double current_time) const
 {
     const int current_index = (int)std::round((current_time - tstart) / dt);

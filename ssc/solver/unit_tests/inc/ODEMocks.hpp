@@ -12,11 +12,13 @@
 
 #include <boost/numeric/odeint/stepper/controlled_step_result.hpp>
 #include <functional>
+#include <memory>
 #include <vector>
 
 #include "ssc/solver/ContinuousSystem.hpp"
 #include "ssc/solver/EventHandler.hpp"
 #include "ssc/solver/Scheduler.hpp"
+#include "ssc/solver/DiscreteSystem.hpp"
 
 class SystemWithMock;
 
@@ -26,7 +28,7 @@ class ODEMocks
     ODEMocks() {}
     MOCK_METHOD0(advance_to_next_time_event, void());
     MOCK_METHOD3(model_function, void(const std::vector<double> &, std::vector<double> &, double));
-    MOCK_METHOD2(observe, void(const ssc::solver::ContinuousSystem &, const double));
+    MOCK_METHOD3(observe, void(const ssc::solver::ContinuousSystem &, const double, const std::vector<std::shared_ptr<ssc::solver::DiscreteSystem> >&));
     MOCK_METHOD4(do_step,
                  void(ssc::solver::ContinuousSystem &sys, std::vector<double> &, double, double));
     MOCK_METHOD4(try_step,
@@ -89,7 +91,7 @@ class ObserverWithMock
         : mock(mock_)
     {
     }
-    void observe(const ssc::solver::ContinuousSystem &s, const double d) { mock.observe(s, d); }
+    void observe(const ssc::solver::ContinuousSystem &s, const double d, const std::vector<std::shared_ptr<ssc::solver::DiscreteSystem> >& ds) { mock.observe(s, d, ds); }
 
   private:
     ObserverWithMock();

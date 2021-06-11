@@ -20,13 +20,14 @@ namespace ssc
 {
     namespace solver
     {
+        typedef std::shared_ptr<DiscreteSystem> DiscreteSystemPtr;
         template <typename StepperType, typename SystemType, typename ObserverType>
         void solve_for_constant_step(SystemType &sys, ObserverType &observer, StepperType &stepper,
-                                     Scheduler &scheduler, EventHandler &event_handler)
+                                     Scheduler &scheduler, EventHandler &event_handler, const std::vector<DiscreteSystemPtr>& discrete_systems)
         {
             const double tstart = scheduler.get_time();
             sys.initialize_system_outputs_before_first_observation();
-            observer.observe(sys, tstart);
+            observer.observe(sys, tstart, discrete_systems);
             while (scheduler.has_more_time_events())
             {
                 const double t = scheduler.get_time();
@@ -46,17 +47,17 @@ namespace ssc
                     event_handler.run_event_actions();
                 }
                 scheduler.advance_to_next_time_event();
-                observer.observe(sys, scheduler.get_time());
+                observer.observe(sys, scheduler.get_time(), discrete_systems);
             }
         }
 
         template <typename StepperType, typename SystemType, typename ObserverType>
         void solve_for_adaptive_step(SystemType &sys, ObserverType &observer, StepperType &stepper,
-                                     Scheduler &scheduler, EventHandler &event_handler)
+                                     Scheduler &scheduler, EventHandler &event_handler, const std::vector<DiscreteSystemPtr>& discrete_systems)
         {
             const double tstart = scheduler.get_time();
             sys.initialize_system_outputs_before_first_observation();
-            observer.observe(sys, tstart);
+            observer.observe(sys, tstart, discrete_systems);
             while (scheduler.has_more_time_events())
             {
                 const double t = scheduler.get_time();
@@ -78,7 +79,7 @@ namespace ssc
                         state_updater(scheduler, &sys);
                     }
                     scheduler.advance_to_next_time_event();
-                    observer.observe(sys, t);
+                    observer.observe(sys, t, discrete_systems);
                 }
                 else
                 {
@@ -87,42 +88,15 @@ namespace ssc
                 }
             }
         }
+
         template <typename StepperType, typename SystemType, typename ObserverType>
-        void quicksolve(SystemType &sys, Scheduler &scheduler, ObserverType &observer)
+        void quicksolve(SystemType &sys, Scheduler &scheduler, ObserverType &observer, const std::vector<DiscreteSystemPtr>& discrete_systems = {})
         {
             StepperType stepper;
             EventHandler event_handler;
             solve_for_constant_step<StepperType, SystemType>(sys, observer, stepper, scheduler,
-                                                             event_handler);
+                                                             event_handler, discrete_systems);
         }
-        typedef TR1(shared_ptr)<DiscreteSystem> DiscreteSystemPtr;
-
-        template <typename StepperType, typename SystemType, typename ObserverType>
-        void quicksolve(SystemType &sys, std::vector<DiscreteSystemPtr> &discrete_systems,
-                        Scheduler &scheduler, ObserverType &observer)
-        {
-            StepperType stepper;
-            EventHandler event_handler;
-            for (const auto &discrete_system : discrete_systems)
-            {
-                discrete_system->schedule_update(scheduler.get_t0(), scheduler);
-            }
-            solve_for_constant_step<StepperType, SystemType, ObserverType>(sys, observer, stepper,
-                                                                           scheduler, event_handler);
-        }
-
-        template <typename StepperType, typename SystemType, typename ObserverType>
-        void quicksolve(SystemType &sys, DiscreteSystem &discrete_system, Scheduler &scheduler,
-                        ObserverType &observer)
-        {
-            quicksolve<StepperType, SystemType, ObserverType>(
-                sys,
-                std::vector<DiscreteSystemPtr>(1,
-                                               std::make_shared<DiscreteSystem>(&discrete_system)),
-                scheduler,
-                observer);
-        }
-
     }
 }
 

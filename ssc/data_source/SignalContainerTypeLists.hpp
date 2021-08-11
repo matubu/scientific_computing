@@ -29,13 +29,14 @@ namespace ssc
         class TypedSignalName
         {
             public:
+                TypedSignalName();
+                TypedSignalName(const TypedSignalName& rhs) = default;
                 TypedSignalName(const SignalName& signal_name, const TypeName& type_name);
                 bool operator<(const TypedSignalName& rhs) const;
                 bool operator==(const TypedSignalName& rhs) const;
                 bool operator!=(const TypedSignalName& rhs) const;
                 SignalName get_signal_name() const;
                 TypeName get_type_name() const;
-                TypedSignalName();
                 TypedSignalName& operator=(const TypedSignalName& rhs);
             private:
                 SignalName _signal_name;

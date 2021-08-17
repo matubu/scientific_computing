@@ -41,7 +41,7 @@ find_library(
 find_path (
           IPOPT_INCLUDE_DIRS
           IpTNLP.hpp
-          PATHS ${IPOPT_ROOT}/include/coin)
+          PATHS ${IPOPT_ROOT}/include/coin ${IPOPT_ROOT}/include/coin-or)
 
 if (WIN32)
     set(IPOPT ${COIN_IPOPT} ${COIN_MUMPS} ${COIN_LAPACK}

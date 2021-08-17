@@ -38,6 +38,7 @@ namespace ssc
         {
             public:
                 PositiveDouble(const double& val);
+                PositiveDouble(const PositiveDouble& rhs) = default;
                 operator double() const;
                 double operator+(const double& rhs) const;
                 PositiveDouble operator+(const PositiveDouble& rhs) const;

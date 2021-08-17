@@ -34,6 +34,15 @@ Windows 64 bits with GCC 5.4.0 win32 threads:
      paths:
      - ssc.zip
 
+Debian 11 with GCC 10:
+   stage: build
+   script:
+     - make debian_11_release_gcc_10
+     - mv ssc/build_deb11/ssc.deb .
+   artifacts:
+     paths:
+     - ssc.deb
+
 Debian 10 with GCC 8:
    stage: build
    script:

@@ -66,6 +66,15 @@ debian_10_profile_gcc_8: CREATE_INDIVIDUAL_LIBRARIES=True
 debian_10_profile_gcc_8: ci_env=
 debian_10_profile_gcc_8: linux_cmake linux_build linux_test
 
+debian_11_release_gcc_10: BUILD_TYPE=Release
+debian_11_release_gcc_10: BUILD_DIR=build_deb11
+debian_11_release_gcc_10: CPACK_GENERATOR=DEB
+debian_11_release_gcc_10: DOCKER_IMAGE=sirehna/base-image-debian11-gcc10:2021-08-17
+debian_11_release_gcc_10: BOOST_ROOT=/opt/boost
+debian_11_release_gcc_10: CREATE_INDIVIDUAL_LIBRARIES=True
+debian_11_release_gcc_10: ci_env=
+debian_11_release_gcc_10: linux_cmake linux_build linux_test
+
 centos_7_5_release_gcc_485: BUILD_TYPE=Profile
 centos_7_5_release_gcc_485: BUILD_DIR=build_centos75
 centos_7_5_release_gcc_485: CPACK_GENERATOR=ZIP

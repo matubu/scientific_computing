@@ -201,10 +201,10 @@ TEST_F(IpoptSolverTest, can_solve_a_maximization_problem)
     IpoptSolver optimize(pb);
     const std::vector<double> x0(2,0);
     auto res = optimize.solve(x0);
-    ASSERT_DOUBLE_EQ(6315.625, res.value_of_the_objective_function);
+    ASSERT_NEAR(6315.625, res.value_of_the_objective_function, 3e-11);
     ASSERT_EQ(2, res.state_values.size());
-    ASSERT_DOUBLE_EQ(21.875, res.state_values["x1"]);
-    ASSERT_DOUBLE_EQ(53.125, res.state_values["x2"]);
+    ASSERT_NEAR(21.875, res.state_values["x1"], 6e-13);
+    ASSERT_NEAR(53.125, res.state_values["x2"], 6e-13);
 }
 
 TEST_F(IpoptSolverTest, cannot_use_ipopt_when_there_are_binary_variables)

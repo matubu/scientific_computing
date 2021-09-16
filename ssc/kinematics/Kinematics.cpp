@@ -108,6 +108,17 @@ class Kinematics::Impl
         {
         }
 
+        void add_inverse_module(const std::string& from_frame, const std::string& to_frame)
+        {
+            const std::string direct_transform = make_transform_name(from_frame, to_frame);
+            InverseTransformComputer computer(&ds, std::string("reverse(")+direct_transform+")");
+            computer.name_of_direct_transform = direct_transform;
+            const std::string inverse_transform = make_transform_name(to_frame, from_frame);
+            computer.name_of_inverse_transform = inverse_transform;
+            ds.add(computer);
+            tree.add(from_frame, to_frame);
+        }
+
         void add(const Transform& t)
         {
             if (t.get_from_frame() == t.get_to_frame())
@@ -120,12 +131,7 @@ class Kinematics::Impl
             ds.set(direct_transform, t);
             if (need_to_add_modules)
             {
-                InverseTransformComputer computer(&ds, std::string("reverse(")+direct_transform+")");
-                computer.name_of_direct_transform = direct_transform;
-                const std::string inverse_transform = make_transform_name(t.get_to_frame(), t.get_from_frame());
-                computer.name_of_inverse_transform = inverse_transform;
-                ds.add(computer);
-                tree.add(t.get_from_frame(), t.get_to_frame());
+                add_inverse_module(t.get_from_frame(), t.get_to_frame());
             }
             ds.check_out();
         }
@@ -145,6 +151,7 @@ class Kinematics::Impl
                 computer.transforms = tree.get_path(from_frame, to_frame);
                 ds.add(computer);
                 tree.add(from_frame, to_frame); // Register compose transform in kinematic tree so it can be used when computing shortest paths
+                add_inverse_module(from_frame, to_frame);
                 const auto T = ds.get<kinematics::Transform>(make_transform_name(from_frame, to_frame));
                 ds.check_out();
                 return T;

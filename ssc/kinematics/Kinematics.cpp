@@ -113,8 +113,7 @@ class Kinematics::Impl
             const std::string direct_transform = make_transform_name(from_frame, to_frame);
             InverseTransformComputer computer(&ds, std::string("reverse(")+direct_transform+")");
             computer.name_of_direct_transform = direct_transform;
-            const std::string inverse_transform = make_transform_name(to_frame, from_frame);
-            computer.name_of_inverse_transform = inverse_transform;
+            computer.name_of_inverse_transform = make_transform_name(to_frame, from_frame);
             ds.add(computer);
             tree.add(from_frame, to_frame);
         }

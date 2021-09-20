@@ -100,6 +100,22 @@ TEST_F(KinematicsTests, can_compute_a_transformation_if_necessary_and_feasible)
     ASSERT_TRUE(double_equal(hTe, hTd*dTe, EPS));
 }
 
+TEST_F(KinematicsTests, can_compute_the_inverse_of_a_composite_transform)
+{
+    ssc::kinematics::Kinematics k;
+
+    const auto bTa = random_transform(a, "A", "B");
+    const auto cTb = random_transform(a, "B", "C");
+    k.add(bTa);
+    k.add(cTb);
+
+    k.get("A", "C"); // This will build the composite transform A->C
+    ASSERT_NO_THROW(k.get("C", "A"));
+
+    const auto aTc = k.get("C", "A");
+    ASSERT_TRUE(double_equal(identity("B"), bTa*aTc*cTb, EPS));
+}
+
 TEST_F(KinematicsTests, can_compute_identity)
 {
     ssc::kinematics::Kinematics k;

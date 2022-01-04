@@ -9,7 +9,12 @@
 #include "ssc/kinematics/Kinematics.hpp"
 #include "random_kinematics.hpp"
 #include "ssc/kinematics/KinematicsException.hpp"
+#include "ssc/kinematics/rotation_matrix_builders.hpp"
 #include "transform_double_equal.hpp"
+
+#include <cmath> // For atan
+
+#define PI (4.*atan(1.))
 
 #define EPS 1E-13
 
@@ -148,4 +153,43 @@ TEST_F(KinematicsTests, should_throw_when_adding_tranform_from_a_frame_to_itself
     ssc::kinematics::Kinematics k;
     const auto aTa = random_transform(a, "A", "A");
     ASSERT_THROW(k.add(aTa), KinematicsException);
+}
+
+
+TEST_F(KinematicsTests, can_compose_two_transformations)
+{
+    ssc::kinematics::Kinematics k;
+    const RotationMatrix rot_z_45deg = ssc::kinematics::rot(0, 0, 1, PI/4);
+    const auto aTb = Transform(Point("A", 3, 5, 7), "B");
+    const auto bTc = Transform(Point("B", 0, 0, 0), rot_z_45deg, "C");
+    const auto aTc_expected = Transform(Point("A", 3, 5, 7), rot_z_45deg, "C");
+    k.add(aTb);
+    k.add(bTc);
+    auto aTc = k.get("A", "C");
+    ASSERT_TRUE(double_equal(aTc_expected, aTc, EPS));
+    aTc.swap();
+
+    const auto origin_of_c_in_a = aTc * Point("C");
+    ASSERT_EQ("A", origin_of_c_in_a.get_frame());
+    ASSERT_NEAR(3, origin_of_c_in_a.x(), EPS);
+    ASSERT_NEAR(5, origin_of_c_in_a.y(), EPS);
+    ASSERT_NEAR(7, origin_of_c_in_a.z(), EPS);
+
+    const auto point_x1_of_c_in_a = aTc * Point("C", 1, 0, 0);
+    ASSERT_EQ("A", point_x1_of_c_in_a.get_frame());
+    ASSERT_NEAR(3 + sqrt(2.0) / 2.0, point_x1_of_c_in_a.x(), EPS);
+    ASSERT_NEAR(5 + sqrt(2.0) / 2.0, point_x1_of_c_in_a.y(), EPS);
+    ASSERT_NEAR(7, point_x1_of_c_in_a.z(), EPS);
+
+    const auto point_y1_of_c_in_a = aTc * Point("C", 0, 1, 0);
+    ASSERT_EQ("A", point_y1_of_c_in_a.get_frame());
+    ASSERT_NEAR(3 - sqrt(2.0) / 2.0, point_y1_of_c_in_a.x(), EPS);
+    ASSERT_NEAR(5 + sqrt(2.0) / 2.0, point_y1_of_c_in_a.y(), EPS);
+    ASSERT_NEAR(7, point_y1_of_c_in_a.z(), EPS);
+
+    const auto point_z1_of_c_in_a = aTc * Point("C", 0, 0, 1);
+    ASSERT_EQ("A", point_z1_of_c_in_a.get_frame());
+    ASSERT_NEAR(3, point_z1_of_c_in_a.x(), EPS);
+    ASSERT_NEAR(5, point_z1_of_c_in_a.y(), EPS);
+    ASSERT_NEAR(8, point_z1_of_c_in_a.z(), EPS);
 }

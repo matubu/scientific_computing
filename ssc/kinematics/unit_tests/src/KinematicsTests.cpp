@@ -55,9 +55,9 @@ TEST_F(KinematicsTests, can_retrieve_inverse_transform)
     ssc::kinematics::Kinematics k;
     const std::string from_frame = a.random<std::string>();
     const std::string to_frame = a.random<std::string>();
-    const auto bTa = random_transform(a, from_frame, to_frame);
-    k.add(bTa);
-    const auto aTb = k.get(to_frame, from_frame);
+    const auto aTb = random_transform(a, from_frame, to_frame);
+    k.add(aTb);
+    const auto bTa = k.get(to_frame, from_frame);
     //! [KinematicsTests get_example]
     //! [KinematicsTests get_example output]
     ASSERT_TRUE(double_equal(identity(from_frame), aTb*bTa, EPS));
@@ -75,52 +75,51 @@ TEST_F(KinematicsTests, can_compute_a_transformation_if_necessary_and_feasible)
 {
     ssc::kinematics::Kinematics k;
 
-    const auto bTa = random_transform(a, "A", "B");
-    const auto cTa = random_transform(a, "A", "C");
-    const auto dTb = random_transform(a, "B", "D");
-    const auto eTc = random_transform(a, "C", "E");
-    const auto fTc = random_transform(a, "C", "F");
-    const auto gTd = random_transform(a, "D", "G");
-    const auto hTd = random_transform(a, "D", "H");
-    const auto iTd = random_transform(a, "D", "I");
-    const auto dTe = random_transform(a, "E", "D");
+    const auto aTb = random_transform(a, "A", "B");
+    const auto aTc = random_transform(a, "A", "C");
+    const auto bTd = random_transform(a, "B", "D");
+    const auto cTe = random_transform(a, "C", "E");
+    const auto cTf = random_transform(a, "C", "F");
+    const auto dTg = random_transform(a, "D", "G");
+    const auto dTh = random_transform(a, "D", "H");
+    const auto dTi = random_transform(a, "D", "I");
+    const auto eTd = random_transform(a, "E", "D");
 
-    k.add(bTa);
-    k.add(cTa);
-    k.add(dTb);
-    k.add(eTc);
-    k.add(fTc);
-    k.add(gTd);
-    k.add(hTd);
-    k.add(iTd);
-    k.add(dTe);
+    k.add(aTb);
+    k.add(aTc);
+    k.add(bTd);
+    k.add(cTe);
+    k.add(cTf);
+    k.add(dTg);
+    k.add(dTh);
+    k.add(dTi);
+    k.add(eTd);
 
-    const auto hTe = k.get("E", "H");
+    const auto eTh = k.get("E", "H");
 
-    ASSERT_TRUE(double_equal(hTe, hTd*dTe, EPS));
+    ASSERT_TRUE(double_equal(eTh, eTd * dTh, EPS));
 }
 
 TEST_F(KinematicsTests, can_compute_the_inverse_of_a_composite_transform)
 {
     ssc::kinematics::Kinematics k;
 
-    const auto bTa = random_transform(a, "A", "B");
-    const auto cTb = random_transform(a, "B", "C");
-    k.add(bTa);
-    k.add(cTb);
+    const auto aTb = random_transform(a, "A", "B");
+    const auto bTc = random_transform(a, "B", "C");
+    k.add(aTb);
+    k.add(bTc);
 
     k.get("A", "C"); // This will build the composite transform A->C
     ASSERT_NO_THROW(k.get("C", "A"));
 
-    const auto aTc = k.get("C", "A");
-    ASSERT_TRUE(double_equal(identity("B"), bTa*aTc*cTb, EPS));
+    const auto cTa = k.get("C", "A");
+    ASSERT_TRUE(double_equal(identity("A"), aTb*bTc*cTa, EPS));
 }
 
 TEST_F(KinematicsTests, can_compute_identity)
 {
     ssc::kinematics::Kinematics k;
-    const auto bTa = random_transform(a, "A", "B");
-    k.add(bTa);
+    k.add(random_transform(a, "A", "B"));
     const auto aTa = k.get("A", "A");
     ASSERT_TRUE(double_equal(identity("A"), aTa, EPS));
 }
@@ -128,22 +127,19 @@ TEST_F(KinematicsTests, can_compute_identity)
 TEST_F(KinematicsTests, can_add_same_transform_several_times)
 {
     ssc::kinematics::Kinematics k;
-    const auto bTa = random_transform(a, "A", "B");
-    k.add(bTa);
-    k.add(bTa);
-    k.add(bTa);
-    k.add(bTa);
+    const auto aTb = random_transform(a, "A", "B");
+    k.add(aTb);
+    k.add(aTb);
+    k.add(aTb);
+    k.add(aTb);
 }
 
 TEST_F(KinematicsTests, should_throw_when_computing_transform_between_two_disjoint_frames)
 {
     ssc::kinematics::Kinematics k;
-    const auto bTa = random_transform(a, "A", "B");
-    const auto cTb = random_transform(a, "B", "C");
-    const auto dTe = random_transform(a, "E", "D");
-    k.add(bTa);
-    k.add(cTb);
-    k.add(dTe);
+    k.add(random_transform(a, "A", "B"));
+    k.add(random_transform(a, "B", "C"));
+    k.add(random_transform(a, "E", "D"));
     ASSERT_THROW(k.get("A", "E"), KinematicsException);
 }
 

@@ -79,7 +79,7 @@ class CompositeTransformComputer : public DataSourceModule
 
             for (size_t i = 1 ; i < transforms.size() ; ++i)
             {
-                t = ds->get<Transform>(make_transform_name(transforms[i])) * t;
+                t = t * ds->get<Transform>(make_transform_name(transforms[i]));
             }
             ds->set(name_of_transform, t);
         }

@@ -11,9 +11,7 @@
 #include "random_kinematics.hpp"
 #include "ssc/kinematics/rotation_matrix_builders.hpp"
 
-#include <cmath> // For atan
-
-#define PI (4.*atan(1.))
+#define PI (3.141592653589793238462643383279502884)
 
 #define EPS 1E-13
 

@@ -12,10 +12,6 @@
 #include "ssc/kinematics/rotation_matrix_builders.hpp"
 #include "transform_double_equal.hpp"
 
-#include <cmath> // For atan
-
-#define PI (4.*atan(1.))
-
 #define EPS 1E-13
 
 using namespace ssc::kinematics;
@@ -159,7 +155,8 @@ TEST_F(KinematicsTests, should_throw_when_adding_tranform_from_a_frame_to_itself
 TEST_F(KinematicsTests, can_compose_two_transformations)
 {
     ssc::kinematics::Kinematics k;
-    const RotationMatrix rot_z_45deg = ssc::kinematics::rot(0, 0, 1, PI/4);
+    const double pi = 3.141592653589793238462643383279502884;
+    const RotationMatrix rot_z_45deg = ssc::kinematics::rot(0, 0, 1, pi / 4);
     const auto aTb = Transform(Point("A", 3, 5, 7), "B");
     const auto bTc = Transform(Point("B", 0, 0, 0), rot_z_45deg, "C");
     const auto aTc_expected = Transform(Point("A", 3, 5, 7), rot_z_45deg, "C");

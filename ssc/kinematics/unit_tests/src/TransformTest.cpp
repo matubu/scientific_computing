@@ -11,9 +11,7 @@
 #include "random_kinematics.hpp"
 #include "ssc/kinematics/rotation_matrix_builders.hpp"
 
-#include <cmath> // For atan
-
-#define PI (4.*atan(1.))
+#define PI (3.141592653589793238462643383279502884)
 
 #define EPS 1E-13
 
@@ -63,7 +61,7 @@ TEST_F(TransformTest, can_compose_two_translations)
         const Point P2 = random_point_in_frame(a, middle_frame);
         const Transform T1(P1,middle_frame);
         const Transform T2(P2,a.random<std::string>());
-        const Point Q = T2*T1*P1;
+        const Point Q = T1*T2*P1;
 
         ASSERT_SMALL_RELATIVE_ERROR(2*P1.x()+P2.x(),Q.x(),EPS);
         ASSERT_SMALL_RELATIVE_ERROR(2*P1.y()+P2.y(),Q.y(),EPS);
@@ -81,7 +79,7 @@ TEST_F(TransformTest, can_compose_two_translations_for_a_point_matrix)
         const Transform T1(P1,middle_frame);
         const Transform T2(P2,a.random<std::string>());
         const PointMatrix PC1 = random_point_matrix_in_frame(a, P1.get_frame());
-        const PointMatrix Q = T2*T1*PC1;
+        const PointMatrix Q = T1*T2*PC1;
         ASSERT_EQ(T2.get_to_frame(),Q.get_frame());
         ASSERT_EQ(3,Q.m.rows());
         ASSERT_EQ(PC1.m.cols(),Q.m.cols());
@@ -94,6 +92,53 @@ TEST_F(TransformTest, can_compose_two_translations_for_a_point_matrix)
     }
 }
 
+/**
+ * The assertions produced in C++ code comes from the following code
+ *
+ * \code{.py}
+    import sympy as sp
+    ctm_x = lambda alpha: sp.Matrix(
+        [
+            [1, 0, 0],
+            [0, sp.cos(alpha), sp.sin(alpha)],
+            [0, -sp.sin(alpha), sp.cos(alpha)],
+        ]
+    )
+    ctm_y = lambda alpha: sp.Matrix(
+        [
+            [sp.cos(alpha), 0, -sp.sin(alpha)],
+            [0, 1, 0],
+            [sp.sin(alpha), 0, sp.cos(alpha)],
+        ]
+    )
+    rot_x = lambda alpha: ctm_x(alpha).transpose()
+    rot_y = lambda alpha: ctm_y(alpha).transpose()
+
+    tx_ab = sp.Symbol("tx_ab")
+    ty_ab = sp.Symbol("ty_ab")
+    tz_ab = sp.Symbol("tz_ab")
+    tx_bc = sp.Symbol("tx_bc")
+    ty_bc = sp.Symbol("ty_bc")
+    tz_bc = sp.Symbol("tz_bc")
+    tr_ab = sp.Matrix.eye(4)
+    tr_ab[:3,:3] = rot_x(sp.pi/3)
+    tr_ab[0,3] = tx_ab
+    tr_ab[1,3] = ty_ab
+    tr_ab[2,3] = tz_ab
+
+    tr_bc = sp.Matrix.eye(4)
+    tr_bc[:3,:3] = rot_y(sp.pi/3)
+    tr_bc[0,3] = tx_bc
+    tr_bc[1,3] = ty_bc
+    tr_bc[2,3] = tz_bc
+
+    x = sp.Symbol("x")
+    y = sp.Symbol("y")
+    z = sp.Symbol("z")
+    point = sp.Matrix([[x],[y],[z],[1]])
+    print(tr_ab * tr_bc * point)
+    \endcode
+*/
 TEST_F(TransformTest, can_compose_two_translations_and_two_rotations)
 {
     const double beta = PI/3;
@@ -107,13 +152,13 @@ TEST_F(TransformTest, can_compose_two_translations_and_two_rotations)
         const auto Ra = rot(1,0,0,beta);
         const Point tb = random_point_in_frame(a, B);
         const auto Rb = rot(0,1,0,beta);
-        const Transform bTa(ta,Ra,B);
-        const Transform cTb(tb,Rb,C);
-        const Point Pc = cTb*bTa*P;
+        const Transform aTb(ta,Ra,B);
+        const Transform bTc(tb,Rb,C);
+        const Point Pc = aTb * bTc * P;
         ASSERT_EQ(C, Pc.get_frame());
-        ASSERT_SMALL_RELATIVE_ERROR((P.x()+ta.x())/2.0+(3.0*P.y()+sqrt(3.0)*P.z())/4.0+sqrt(3.0)*ta.z()/2.0+tb.x(),Pc.x(),EPS);
-        ASSERT_SMALL_RELATIVE_ERROR((P.y()-sqrt(3.0)*P.z())/2.0+ta.y()+tb.y(),Pc.y(),EPS);
-        ASSERT_SMALL_RELATIVE_ERROR((P.y()*sqrt(3.0)+P.z())/4.0+ta.z()/2.0-(sqrt(3.0)/2.0)*(P.x()+ta.x())+tb.z(),Pc.z(),EPS);
+        ASSERT_SMALL_RELATIVE_ERROR(ta.x() + tb.x() + P.x()/2 + sqrt(3.0)*P.z()/2, Pc.x(), EPS);
+        ASSERT_SMALL_RELATIVE_ERROR(ta.y() + tb.y()/2 - sqrt(3.0)*tb.z()/2 + 3*P.x()/4 + P.y()/2 - sqrt(3.0)*P.z()/4, Pc.y(), EPS);
+        ASSERT_SMALL_RELATIVE_ERROR(sqrt(3.0)*tb.y()/2 + ta.z() + tb.z()/2 - sqrt(3.0)*P.x()/4 + sqrt(3.0)*P.y()/2 + P.z()/4, Pc.z(), EPS);
     }
 }
 
@@ -145,7 +190,7 @@ TEST_F(TransformTest, can_compose_two_rotations)
         const std::string middle_frame = a.random<std::string>();
         const Transform T1(R1, P.get_frame(), middle_frame);
         const Transform T2(R2, middle_frame, a.random<std::string>());
-        const Point Q = T2*T1*P;
+        const Point Q = T1*T2*P;
 
         ASSERT_SMALL_RELATIVE_ERROR(cos(beta1+beta2)*P.x()-sin(beta1+beta2)*P.y(),Q.x(),EPS);
         ASSERT_SMALL_RELATIVE_ERROR(sin(beta1+beta2)*P.x()+cos(beta1+beta2)*P.y(),Q.y(),EPS);
@@ -199,9 +244,9 @@ TEST_F(TransformTest, should_throw_if_composing_transforms_in_wrong_frame)
         const RotationMatrix R = a.random<RotationMatrix>();
         const Transform T1(O1,R,F2);
         const Transform T2(O2,R,a.random<std::string>());
-        ASSERT_NO_THROW(T2*T1);
+        ASSERT_NO_THROW(T1*T2);
         ASSERT_THROW(T1*T1, KinematicsException);
-        ASSERT_THROW(T1*T2, KinematicsException);
+        ASSERT_THROW(T2*T1, KinematicsException);
         ASSERT_THROW(T2*T2, KinematicsException);
     }
 }
@@ -254,8 +299,8 @@ TEST_F(TransformTest, can_compute_the_inverse_transform)
         const std::string frame_b = a.random<std::string>();
         const Point Pa = random_point_in_frame(a, frame_a);
         const Point Pb = random_point_in_frame(a, frame_b);
-        const auto bTa = random_transform(a, frame_a, frame_b);
-        const Transform aTb = bTa.inverse();
+        const auto aTb = random_transform(a, frame_a, frame_b);
+        const Transform bTa = aTb.inverse();
         ASSERT_SMALL_RELATIVE_ERROR(Pa.x(),((aTb*bTa)*Pa).x(),EPS);
         ASSERT_SMALL_RELATIVE_ERROR(Pa.y(),((aTb*bTa)*Pa).y(),EPS);
         ASSERT_SMALL_RELATIVE_ERROR(Pa.z(),((aTb*bTa)*Pa).z(),EPS);

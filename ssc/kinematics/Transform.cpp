@@ -69,11 +69,13 @@ Velocity Transform::operator*(const Velocity& V) const
 
 Transform Transform::operator*(const Transform& T) const
 {
-    if (get_from_frame() != T.get_to_frame())
+    if (get_to_frame() != T.get_from_frame())
     {
-        THROW(__PRETTY_FUNCTION__, KinematicsException, std::string("Frames don't match in cTb*bTa: transform cTb goes from ") + get_from_frame() + " to " + to_frame + ", but transform bTa goes from " + T.get_from_frame() + " to " + T.get_to_frame());
+        THROW(__PRETTY_FUNCTION__, KinematicsException,
+            std::string("Frames don't match in aTb*bTc: transform aTb goes from ") + get_from_frame() +
+                        " to " + get_to_frame() + ", but transform bTc goes from " + T.get_from_frame() + " to " + T.get_to_frame());
     }
-    return Transform(Point(T.get_from_frame(), r*T.t.v + t.v), r*T.r, to_frame);
+    return Transform(Point(get_from_frame(), r*T.t.v + t.v), r*T.r, T.get_to_frame());
 }
 
 std::string Transform::get_from_frame() const

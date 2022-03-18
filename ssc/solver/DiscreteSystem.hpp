@@ -72,7 +72,8 @@ namespace ssc
              *
              * The default implementation is current_time+constant (most common case), but this
              * behaviour can be overriden. This method will be called by the "callback" public
-             * method.
+             * method. If the date of the next update is equal to the current time, the controller
+             * will not be called again.
              *
              * @param current_time Current simulation time, in seconds.
              * @return Date at which "callback" will be called (in seconds).

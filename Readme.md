@@ -67,3 +67,13 @@ This package contains:
 - **websocket**:               Send & receive data through websockets in real
                                time. Client & server.
 - **yaml_parser**:             Thin wrapper around yaml-cpp.
+
+## How to build?
+
+You can run `make` to build all platforms.
+
+During development, the easiest is probably to just use:
+
+```
+./ninja_debian.sh run_all_tests && ./run_all_tests.sh --gtest_filter="*"
+```

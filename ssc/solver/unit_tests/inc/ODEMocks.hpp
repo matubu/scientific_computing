@@ -27,6 +27,7 @@ class ODEMocks
   public:
     ODEMocks() {}
     MOCK_METHOD0(advance_to_next_time_event, void());
+    MOCK_METHOD0(check_variables_to_serialize_are_available, void());
     MOCK_METHOD3(model_function, void(const std::vector<double> &, std::vector<double> &, double));
     MOCK_METHOD3(observe, void(const ssc::solver::ContinuousSystem &, const double, const std::vector<std::shared_ptr<ssc::solver::DiscreteSystem> >&));
     MOCK_METHOD4(do_step,
@@ -92,6 +93,7 @@ class ObserverWithMock
     {
     }
     void observe(const ssc::solver::ContinuousSystem &s, const double d, const std::vector<std::shared_ptr<ssc::solver::DiscreteSystem> >& ds) { mock.observe(s, d, ds); }
+    void check_variables_to_serialize_are_available() const {mock.check_variables_to_serialize_are_available();}
 
   private:
     ObserverWithMock();

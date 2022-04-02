@@ -37,6 +37,7 @@ namespace ssc
         {
             public:
                 NullObserver() {}
+                void check_variables_to_serialize_are_available() const {}
                 void observe(const ContinuousSystem& , const double, const std::vector<std::shared_ptr<ssc::solver::DiscreteSystem> >& )
                 {
 
@@ -47,6 +48,7 @@ namespace ssc
         {
             public:
                 DefaultObserver(std::ostream& os_) : os(os_), initialized(false) {}
+                void check_variables_to_serialize_are_available() const {}
                 void observe(const ContinuousSystem& sys, const double t, const std::vector<std::shared_ptr<ssc::solver::DiscreteSystem> >&)
                 {
                     const std::vector<double> x = sys.state;
@@ -84,6 +86,7 @@ namespace ssc
         {
             public:
                 VectorObserver() : v(std::vector<std::pair<double,double> >()) {}
+                void check_variables_to_serialize_are_available() const {}
                 void observe(const ContinuousSystem& sys, const double t, const std::vector<std::shared_ptr<ssc::solver::DiscreteSystem> >&)
                 {
                     v.push_back(std::make_pair(t, sys.state[0]));

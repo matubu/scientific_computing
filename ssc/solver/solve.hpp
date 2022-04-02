@@ -28,6 +28,8 @@ namespace ssc
             const double tstart = scheduler.get_time();
             sys.initialize_system_outputs_before_first_observation();
             observer.observe(sys, tstart, discrete_systems);
+            // All variables should now be in the sytem: let's check this
+            observer.check_variables_to_serialize_are_available();
             while (scheduler.has_more_time_events())
             {
                 const double t = scheduler.get_time();
@@ -58,6 +60,8 @@ namespace ssc
             const double tstart = scheduler.get_time();
             sys.initialize_system_outputs_before_first_observation();
             observer.observe(sys, tstart, discrete_systems);
+            // All variables should now be in the sytem: let's check this
+            observer.check_variables_to_serialize_are_available();
             while (scheduler.has_more_time_events())
             {
                 const double t = scheduler.get_time();

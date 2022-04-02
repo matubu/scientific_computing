@@ -39,9 +39,10 @@ namespace ssc
                 {
                     state_updater(scheduler, &sys);
                 }
+                observer.flush(); // advance_to_next_time_event guarantees we won't see this timestep again
                 const double dt = scheduler.get_step();
+                // Solver step (this will call sys.dx_dt internally)
                 stepper.do_step(sys, sys.state, t, dt);
-                
                 sys.force_states(sys.state, t);
                 if (event_handler.detected_state_events())
                 {
@@ -51,6 +52,7 @@ namespace ssc
                 scheduler.advance_to_next_time_event();
                 observer.observe(sys, scheduler.get_time(), discrete_systems);
             }
+            observer.flush();
         }
 
         template <typename StepperType, typename SystemType, typename ObserverType>
@@ -65,6 +67,7 @@ namespace ssc
             while (scheduler.has_more_time_events())
             {
                 const double t = scheduler.get_time();
+                observer.flush(); // advance_to_next_time_event guarantees we won't see this timestep again
                 const double dt = scheduler.get_step();
                 const boost::numeric::odeint::controlled_step_result res
                     = stepper.try_step(sys, sys.state, t, dt);
@@ -91,6 +94,7 @@ namespace ssc
                     scheduler.advance_to_next_time_event();
                 }
             }
+            observer.flush();
         }
 
         template <typename StepperType, typename SystemType, typename ObserverType>

@@ -42,6 +42,8 @@ namespace ssc
                 {
 
                 }
+                void flush()
+                {}
         };
 
         class DefaultObserver
@@ -62,6 +64,8 @@ namespace ssc
                     v.insert(v.end(), x.begin(), x.end());
                     serialize(os, v.begin(), v.end());
                 }
+                void flush()
+                {}
 
             private:
 
@@ -96,6 +100,9 @@ namespace ssc
                 {
                     return v;
                 }
+
+                void flush()
+                {}
 
             private:
                 std::vector<std::pair<double,double> > v;

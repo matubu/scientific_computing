@@ -49,6 +49,7 @@ TEST_F(
     EXPECT_CALL(mock, check_variables_to_serialize_are_available()).RetiresOnSaturation();
     EXPECT_CALL(mock, has_more_time_events()).RetiresOnSaturation();
     EXPECT_CALL(mock, get_time()).RetiresOnSaturation();
+    EXPECT_CALL(mock, flush()).RetiresOnSaturation();
     EXPECT_CALL(mock, get_step()).RetiresOnSaturation();
     EXPECT_CALL(mock, do_step(_, _, _, _)).RetiresOnSaturation();
     EXPECT_CALL(mock, force_states(_, _)).RetiresOnSaturation();
@@ -59,6 +60,7 @@ TEST_F(
     EXPECT_CALL(mock, get_time()).RetiresOnSaturation();
     EXPECT_CALL(mock, observe(_, _, _));
     EXPECT_CALL(mock, has_more_time_events()).RetiresOnSaturation();
+    EXPECT_CALL(mock, flush()).RetiresOnSaturation();
 
     solve_for_constant_step<ExplicitStepperWithMock, SystemWithMock, ObserverWithMock>(sys, observer, stepper,
                                                                                        scheduler, event_handler, {});
@@ -86,6 +88,7 @@ TEST_F(
     EXPECT_CALL(mock, check_variables_to_serialize_are_available()).RetiresOnSaturation();
     EXPECT_CALL(mock, has_more_time_events()).RetiresOnSaturation();
     EXPECT_CALL(mock, get_time()).RetiresOnSaturation();
+    EXPECT_CALL(mock, flush()).RetiresOnSaturation();
     EXPECT_CALL(mock, get_step()).RetiresOnSaturation();
     EXPECT_CALL(mock, do_step(_, _, _, _)).RetiresOnSaturation();
     EXPECT_CALL(mock, force_states(_, _)).RetiresOnSaturation();
@@ -94,6 +97,7 @@ TEST_F(
     EXPECT_CALL(mock, get_time()).RetiresOnSaturation();
     EXPECT_CALL(mock, observe(_, _, _));
     EXPECT_CALL(mock, has_more_time_events()).RetiresOnSaturation();
+    EXPECT_CALL(mock, flush()).RetiresOnSaturation();
 
     solve_for_constant_step<ExplicitStepperWithMock, SystemWithMock, ObserverWithMock>(sys, observer, stepper,
                                                                                        scheduler, event_handler, {});

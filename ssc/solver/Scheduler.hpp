@@ -28,7 +28,7 @@ namespace ssc
                 , discrete_state_updaters()
                 , t0(tstart)
                 , tend(tend_)
-                , tolerance(0.01 * dt)
+                , tolerance(0.001 * dt)
             {
                 if (dt > 0)
                 {

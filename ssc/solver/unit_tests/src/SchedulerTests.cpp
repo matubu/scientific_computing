@@ -131,12 +131,12 @@ TEST_F(SchedulerTests, cannot_add_a_time_event_already_in_the_scheduler)
 
     scheduler.add_time_event(t0 + 1);
     scheduler.add_time_event(t0 + N * dt);
-    scheduler.add_time_event(t0 + (N / 4 + 0.0005) * dt);
+    scheduler.add_time_event(t0 + (N / 4 + 0.00005) * dt);
     scheduler.add_time_event(t0 + (N / 2) * dt);
-    scheduler.add_time_event(t0 + 1 - 0.001 * dt);
-    scheduler.add_time_event(t0 + 1 + 0.00999999 * dt);
-    scheduler.add_time_event(t0 + (N - 0.0099) * dt);
-    scheduler.add_time_event(t0 + (N + 0.01) * dt);
+    scheduler.add_time_event(t0 + 1 - 0.0001 * dt);
+    scheduler.add_time_event(t0 + 1 + 0.000999999 * dt);
+    scheduler.add_time_event(t0 + (N - 0.00099) * dt);
+    scheduler.add_time_event(t0 + (N + 0.001) * dt);
 
     ASSERT_EQ(t0, scheduler.get_time());
     ASSERT_EQ(true, scheduler.has_more_time_events());

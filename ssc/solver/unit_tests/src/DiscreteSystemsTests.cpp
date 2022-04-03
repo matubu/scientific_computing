@@ -126,7 +126,7 @@ TEST_F(DiscreteSystemsTests, one_second_steps)
 
     const double t0 = 6;
     const double tend = 16.1;
-    const double dt = 0.1;
+    const double dt = 0.01;
     ssc::solver::Scheduler scheduler(t0, tend, dt);
 
     const double discrete_system_dt = 1;
@@ -339,7 +339,7 @@ TEST_F(DiscreteSystemsTests, no_time_drift)
             0.1060, 0.1061, 0.1062, 0.1063, 0.1064, 0.1065, 0.1066, 0.1067, 0.1068, 0.1069,
             0.1070, 0.1071, 0.1072, 0.1073, 0.1074, 0.1075, 0.1076, 0.1077, 0.1078, 0.1079,
             0.1080, 0.1081, 0.1082, 0.1083, 0.1084, 0.1085, 0.1086, 0.1087, 0.1088, 0.1089,
-            0.1090 };
+            0.1090, 0.1091, 0.1092, 0.1093, 0.1094, 0.1095, 0.1096, 0.1097, 0.1098 }; // 0.1099 is not scheduled because it's too close to tend==0.11
     ASSERT_EQ(expected_discrete_system_calltimes.size(), discrete_system.calltimes.size());
     for (size_t i = 0; i < expected_discrete_system_calltimes.size(); ++i)
     {

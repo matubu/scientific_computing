@@ -42,6 +42,9 @@ namespace ssc
                 {
 
                 }
+                void collect_available_serializations(const ssc::solver::ContinuousSystem &, const double, const std::vector<std::shared_ptr<ssc::solver::DiscreteSystem> >&)
+                {
+                }
                 void flush()
                 {}
         };
@@ -63,6 +66,9 @@ namespace ssc
                     v.push_back(t);
                     v.insert(v.end(), x.begin(), x.end());
                     serialize(os, v.begin(), v.end());
+                }
+                void collect_available_serializations(const ssc::solver::ContinuousSystem &, const double , const std::vector<std::shared_ptr<ssc::solver::DiscreteSystem> >& )
+                {
                 }
                 void flush()
                 {}
@@ -103,6 +109,10 @@ namespace ssc
 
                 void flush()
                 {}
+
+                void collect_available_serializations(const ssc::solver::ContinuousSystem &, const double , const std::vector<std::shared_ptr<ssc::solver::DiscreteSystem> >& )
+                {
+                }
 
             private:
                 std::vector<std::pair<double,double> > v;

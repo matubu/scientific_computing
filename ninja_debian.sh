@@ -19,5 +19,5 @@ docker run\
     -u $( id -u ):$( id -g )\
     -v $(pwd):/opt/share\
     -w /opt/share/ssc/build_deb11\
-    sirehna/base-image-debian11-gcc10:2021-08-17\
+    sirehna/base-image-debian11-gcc10:2021-12-12\
     ninja  $*

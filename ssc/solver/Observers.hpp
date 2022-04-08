@@ -38,7 +38,10 @@ namespace ssc
             public:
                 NullObserver() {}
                 void check_variables_to_serialize_are_available() const {}
-                void observe(const ContinuousSystem& , const double, const std::vector<std::shared_ptr<ssc::solver::DiscreteSystem> >& )
+                void observe_before_solver_step(const ContinuousSystem& , const double, const std::vector<std::shared_ptr<ssc::solver::DiscreteSystem> >& )
+                {
+                }
+                void observe_after_solver_step(const ContinuousSystem& , const double, const std::vector<std::shared_ptr<ssc::solver::DiscreteSystem> >& )
                 {
 
                 }
@@ -67,8 +70,13 @@ namespace ssc
                     v.insert(v.end(), x.begin(), x.end());
                     serialize(os, v.begin(), v.end());
                 }
-                void collect_available_serializations(const ssc::solver::ContinuousSystem &, const double , const std::vector<std::shared_ptr<ssc::solver::DiscreteSystem> >& )
+                void observe_before_solver_step(const ContinuousSystem& , const double , const std::vector<std::shared_ptr<ssc::solver::DiscreteSystem> >& )
                 {
+                    // Don't do anything: we don't care about observing forces in these tests ; only states matter.
+                }
+                void observe_after_solver_step(const ContinuousSystem& sys, const double t, const std::vector<std::shared_ptr<ssc::solver::DiscreteSystem> >& d)
+                {
+                    observe(sys, t, d);
                 }
                 void flush()
                 {}
@@ -100,6 +108,14 @@ namespace ssc
                 void observe(const ContinuousSystem& sys, const double t, const std::vector<std::shared_ptr<ssc::solver::DiscreteSystem> >&)
                 {
                     v.push_back(std::make_pair(t, sys.state[0]));
+                }
+                void observe_before_solver_step(const ContinuousSystem& , const double , const std::vector<std::shared_ptr<ssc::solver::DiscreteSystem> >& )
+                {
+                    // Don't do anything: we don't care about observing forces in these tests ; only states matter.
+                }
+                void observe_after_solver_step(const ContinuousSystem& sys, const double t, const std::vector<std::shared_ptr<ssc::solver::DiscreteSystem> >& d)
+                {
+                    observe(sys, t, d);
                 }
 
                 std::vector<std::pair<double,double> > get() const

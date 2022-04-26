@@ -20,7 +20,7 @@ namespace ssc
         class DiscreteSystem
         {
           public:
-            DiscreteSystem(const double tstart, const double dt);
+            DiscreteSystem(const double date_of_first_call, const double dt);
             virtual ~DiscreteSystem() = default;
             /**
              * @brief This is the callback that is called by the scheduler.
@@ -30,7 +30,7 @@ namespace ssc
              * @param system This can be used by the 'update' method to retrieve the continuous
              * states of the system.
              */
-            void callback(Scheduler &scheduler, ContinuousSystem *system);
+            void callback(Scheduler &scheduler, ContinuousSystem& system);
 
             /**
              * @brief Initialize the discrete states and add the first callabck to the scheduler.
@@ -39,7 +39,7 @@ namespace ssc
              * @param system This can be used by the 'update' method to retrieve the continuous
              * states of the system.
              */
-            void initialize(Scheduler &scheduler, ContinuousSystem *system);
+            void initialize(Scheduler &scheduler, ContinuousSystem& system);
 
             /**
              * @brief Ask the scheduler to call the 'callback' method some time in the future.
@@ -72,7 +72,8 @@ namespace ssc
              *
              * The default implementation is current_time+constant (most common case), but this
              * behaviour can be overriden. This method will be called by the "callback" public
-             * method.
+             * method. If the date of the next update is equal to the current time, the controller
+             * will not be called again.
              *
              * @param current_time Current simulation time, in seconds.
              * @return Date at which "callback" will be called (in seconds).
@@ -86,9 +87,9 @@ namespace ssc
              * @param time Current simulation time (in seconds).
              * @param system The continuous system. Used to retrieve the continuous states.
              */
-            virtual void update_discrete_states(const double time, ContinuousSystem *system) = 0;
+            virtual void update_discrete_states(const double time, ContinuousSystem& system) = 0;
 
-            double tstart;
+            double date_of_first_call; //!< Date of the first time the discrete system will be called
             double dt;
         };
     }

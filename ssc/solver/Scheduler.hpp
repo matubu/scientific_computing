@@ -21,14 +21,14 @@ namespace ssc
         class Scheduler
         {
           public:
-            typedef std::function<void(Scheduler &scheduler, ContinuousSystem *system)> Callback;
+            typedef std::function<void(Scheduler &scheduler, ContinuousSystem& system)> Callback;
             Scheduler(const double tstart, const double tend_, const double dt)
                 : current_time(tstart)
                 , scheduled_time_events()
                 , discrete_state_updaters()
                 , t0(tstart)
                 , tend(tend_)
-                , tolerance(0.01 * dt)
+                , tolerance(0.001 * dt)
             {
                 if (dt > 0)
                 {

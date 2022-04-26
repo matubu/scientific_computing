@@ -1,8 +1,8 @@
 #include "ssc/solver/DiscreteSystem.hpp"
 #include <cmath>
 
-ssc::solver::DiscreteSystem::DiscreteSystem(const double tstart_, const double dt_)
-    : tstart(tstart_), dt(dt_)
+ssc::solver::DiscreteSystem::DiscreteSystem(const double date_of_first_call_, const double dt_)
+    : date_of_first_call(date_of_first_call_), dt(dt_)
 {
 }
 
@@ -13,15 +13,15 @@ void ssc::solver::DiscreteSystem::schedule_update(const double t, Scheduler &sch
     scheduler.schedule_discrete_state_update(t, binded_callback);
 }
 
-void ssc::solver::DiscreteSystem::callback(Scheduler &scheduler, ContinuousSystem *system)
+void ssc::solver::DiscreteSystem::callback(Scheduler &scheduler, ContinuousSystem& system)
 {
     const double tcurrent = scheduler.get_time();
     update_discrete_states(tcurrent, system);
     const double tnext = get_date_of_next_update(tcurrent);
-    schedule_update(tnext, scheduler);
+    if (tnext > tcurrent) schedule_update(tnext, scheduler);
 }
 
-void ssc::solver::DiscreteSystem::initialize(Scheduler &scheduler, ContinuousSystem *system)
+void ssc::solver::DiscreteSystem::initialize(Scheduler &scheduler, ContinuousSystem& system)
 {
     callback(scheduler, system);
 }
@@ -38,6 +38,6 @@ std::string ssc::solver::DiscreteSystem::get_name() const
 
 double ssc::solver::DiscreteSystem::get_date_of_next_update(const double current_time) const
 {
-    const int current_index = (int)std::round((current_time - tstart) / dt);
-    return tstart + (current_index + 1) * dt;
+    const int current_index = (int)std::round((current_time - date_of_first_call) / dt);
+    return date_of_first_call + (current_index + 1) * dt;
 }

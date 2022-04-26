@@ -27,8 +27,12 @@ class ODEMocks
   public:
     ODEMocks() {}
     MOCK_METHOD0(advance_to_next_time_event, void());
+    MOCK_METHOD0(flush, void());
+    MOCK_METHOD0(check_variables_to_serialize_are_available, void());
     MOCK_METHOD3(model_function, void(const std::vector<double> &, std::vector<double> &, double));
-    MOCK_METHOD3(observe, void(const ssc::solver::ContinuousSystem &, const double, const std::vector<std::shared_ptr<ssc::solver::DiscreteSystem> >&));
+    MOCK_METHOD3(observe_before_solver_step, void(const ssc::solver::ContinuousSystem &, const double, const std::vector<std::shared_ptr<ssc::solver::DiscreteSystem> >&));
+    MOCK_METHOD3(observe_after_solver_step, void(const ssc::solver::ContinuousSystem &, const double, const std::vector<std::shared_ptr<ssc::solver::DiscreteSystem> >&));
+    MOCK_METHOD3(collect_available_serializations, void(const ssc::solver::ContinuousSystem &, const double, const std::vector<std::shared_ptr<ssc::solver::DiscreteSystem> >&));
     MOCK_METHOD4(do_step,
                  void(ssc::solver::ContinuousSystem &sys, std::vector<double> &, double, double));
     MOCK_METHOD4(try_step,
@@ -91,7 +95,11 @@ class ObserverWithMock
         : mock(mock_)
     {
     }
-    void observe(const ssc::solver::ContinuousSystem &s, const double d, const std::vector<std::shared_ptr<ssc::solver::DiscreteSystem> >& ds) { mock.observe(s, d, ds); }
+    void collect_available_serializations(const ssc::solver::ContinuousSystem &s, const double d, const std::vector<std::shared_ptr<ssc::solver::DiscreteSystem> >& ds) { mock.collect_available_serializations(s, d, ds); }
+    void check_variables_to_serialize_are_available() const {mock.check_variables_to_serialize_are_available();}
+    void flush() const {mock.flush();}
+    void observe_before_solver_step(const ssc::solver::ContinuousSystem &s, const double d, const std::vector<std::shared_ptr<ssc::solver::DiscreteSystem> >& ds) { mock.observe_before_solver_step(s, d, ds); }
+    void observe_after_solver_step(const ssc::solver::ContinuousSystem &s, const double d, const std::vector<std::shared_ptr<ssc::solver::DiscreteSystem> >& ds) { mock.observe_after_solver_step(s, d, ds); }
 
   private:
     ObserverWithMock();

@@ -56,16 +56,46 @@ class DiscreteSystem : public ssc::solver::DiscreteSystem
         , ticks({ 13 })
         , calltimes()
     {
+        
     }
     std::vector<size_t> ticks;
     std::vector<double> calltimes;
 
   private:
-    void update_discrete_states(const double t, ssc::solver::ContinuousSystem *) override
+    void update_discrete_states(const double t, ssc::solver::ContinuousSystem&) override
     {
         ticks.push_back(ticks.back() + 1);
         calltimes.push_back(t);
     }
+};
+
+class DiscreteSystemThatStopsAfterAWhile : public ssc::solver::DiscreteSystem
+{
+  public:
+    DiscreteSystemThatStopsAfterAWhile(const double tstart_, const double dt_, const double tmax_)
+        : ssc::solver::DiscreteSystem(tstart_, dt_)
+        , calltimes()
+        , ddt(dt_)
+        , ttstart(tstart_)
+        , tmax(tmax_)
+    {
+    }
+    std::vector<double> calltimes;
+    double ddt;
+    double ttstart;
+    double tmax;
+
+    private :
+        void update_discrete_states(const double t, ssc::solver::ContinuousSystem&) override
+        {
+            calltimes.push_back(t);
+        }
+        double get_date_of_next_update(const double current_time) const override
+        {
+            if (current_time >= tmax) return current_time;
+            const int current_index = (int)std::round((current_time - ttstart) / ddt);
+            return ttstart + (current_index + 1) * ddt;
+        }
 };
 
 TEST_F(DiscreteSystemsTests, can_initialize_discrete_states)
@@ -76,7 +106,7 @@ TEST_F(DiscreteSystemsTests, can_initialize_discrete_states)
     ssc::solver::Scheduler scheduler(t0, t0 + 4 * dt, dt);
     ContinuousSystem continuous_system(std::vector<double>(1, 0));
     DiscreteSystem discrete_system(t0, dt / 2);
-    discrete_system.initialize(scheduler, &continuous_system);
+    discrete_system.initialize(scheduler, continuous_system);
     // Check discrete_system has been initialized
     ASSERT_EQ(std::vector<double>({ t0 }), discrete_system.calltimes);
     ASSERT_EQ(14, discrete_system.ticks.back());
@@ -96,7 +126,7 @@ TEST_F(DiscreteSystemsTests, one_second_steps)
 
     const double t0 = 6;
     const double tend = 16.1;
-    const double dt = 0.1;
+    const double dt = 0.01;
     ssc::solver::Scheduler scheduler(t0, tend, dt);
 
     const double discrete_system_dt = 1;
@@ -309,10 +339,31 @@ TEST_F(DiscreteSystemsTests, no_time_drift)
             0.1060, 0.1061, 0.1062, 0.1063, 0.1064, 0.1065, 0.1066, 0.1067, 0.1068, 0.1069,
             0.1070, 0.1071, 0.1072, 0.1073, 0.1074, 0.1075, 0.1076, 0.1077, 0.1078, 0.1079,
             0.1080, 0.1081, 0.1082, 0.1083, 0.1084, 0.1085, 0.1086, 0.1087, 0.1088, 0.1089,
-            0.1090 };
+            0.1090, 0.1091, 0.1092, 0.1093, 0.1094, 0.1095, 0.1096, 0.1097, 0.1098 }; // 0.1099 is not scheduled because it's too close to tend==0.11
     ASSERT_EQ(expected_discrete_system_calltimes.size(), discrete_system.calltimes.size());
     for (size_t i = 0; i < expected_discrete_system_calltimes.size(); ++i)
     {
         ASSERT_DOUBLE_EQ(expected_discrete_system_calltimes.at(i), discrete_system.calltimes.at(i));
     }
+}
+
+TEST_F(DiscreteSystemsTests, discrete_system_that_stops_updating_after_a_while)
+{
+    ssc::solver::VectorObserver observer;
+    ContinuousSystem system(std::vector<double>(1, 0));
+
+    const double t0 = 2;
+    const double tend = 16.1;
+    const double dt = 0.1;
+    ssc::solver::Scheduler scheduler(t0, tend, dt);
+
+    const double discrete_system_dt = 0.05;
+    DiscreteSystemThatStopsAfterAWhile discrete_system(t0, discrete_system_dt, 2.4);
+    discrete_system.schedule_update(t0, scheduler);
+
+    ssc::solver::quicksolve<EulerStepper>(system, scheduler, observer);
+
+    // Discrete system should have been called every 'discrete_system_dt', from t0=2s to 2.4s
+    ASSERT_EQ(std::vector<double>({ 2,2.05,2.1,2.15,2.20,2.25,2.3,2.35,2.4 }),
+              discrete_system.calltimes);
 }

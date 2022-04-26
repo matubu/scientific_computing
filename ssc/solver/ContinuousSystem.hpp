@@ -59,7 +59,7 @@ namespace ssc
              * the observations you were expecting).
              * Cf.
              *
-https://gitlab.com/sirehna_naval_group/xdyn/-/commit/b3e624960e941d73a8b3823e9cbf306a7679a5be
+             * https://gitlab.com/sirehna_naval_group/sirehna/xdyn/-/commit/b3e624960e941d73a8b3823e9cbf306a7679a5be
              *
              */
             virtual void initialize_system_outputs_before_first_observation() = 0;

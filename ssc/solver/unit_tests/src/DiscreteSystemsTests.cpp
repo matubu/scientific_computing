@@ -62,7 +62,7 @@ class DiscreteSystem : public ssc::solver::DiscreteSystem
     std::vector<double> calltimes;
 
   private:
-    void update_discrete_states(const double t, ssc::solver::ContinuousSystem *) override
+    void update_discrete_states(const double t, ssc::solver::ContinuousSystem&) override
     {
         ticks.push_back(ticks.back() + 1);
         calltimes.push_back(t);
@@ -86,7 +86,7 @@ class DiscreteSystemThatStopsAfterAWhile : public ssc::solver::DiscreteSystem
     double tmax;
 
     private :
-        void update_discrete_states(const double t, ssc::solver::ContinuousSystem *) override
+        void update_discrete_states(const double t, ssc::solver::ContinuousSystem&) override
         {
             calltimes.push_back(t);
         }
@@ -106,7 +106,7 @@ TEST_F(DiscreteSystemsTests, can_initialize_discrete_states)
     ssc::solver::Scheduler scheduler(t0, t0 + 4 * dt, dt);
     ContinuousSystem continuous_system(std::vector<double>(1, 0));
     DiscreteSystem discrete_system(t0, dt / 2);
-    discrete_system.initialize(scheduler, &continuous_system);
+    discrete_system.initialize(scheduler, continuous_system);
     // Check discrete_system has been initialized
     ASSERT_EQ(std::vector<double>({ t0 }), discrete_system.calltimes);
     ASSERT_EQ(14, discrete_system.ticks.back());

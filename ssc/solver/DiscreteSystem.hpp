@@ -30,7 +30,7 @@ namespace ssc
              * @param system This can be used by the 'update' method to retrieve the continuous
              * states of the system.
              */
-            void callback(Scheduler &scheduler, ContinuousSystem *system);
+            void callback(Scheduler &scheduler, ContinuousSystem& system);
 
             /**
              * @brief Initialize the discrete states and add the first callabck to the scheduler.
@@ -39,7 +39,7 @@ namespace ssc
              * @param system This can be used by the 'update' method to retrieve the continuous
              * states of the system.
              */
-            void initialize(Scheduler &scheduler, ContinuousSystem *system);
+            void initialize(Scheduler &scheduler, ContinuousSystem& system);
 
             /**
              * @brief Ask the scheduler to call the 'callback' method some time in the future.
@@ -87,7 +87,7 @@ namespace ssc
              * @param time Current simulation time (in seconds).
              * @param system The continuous system. Used to retrieve the continuous states.
              */
-            virtual void update_discrete_states(const double time, ContinuousSystem *system) = 0;
+            virtual void update_discrete_states(const double time, ContinuousSystem& system) = 0;
 
             double date_of_first_call; //!< Date of the first time the discrete system will be called
             double dt;

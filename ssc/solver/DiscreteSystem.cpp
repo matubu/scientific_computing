@@ -13,7 +13,7 @@ void ssc::solver::DiscreteSystem::schedule_update(const double t, Scheduler &sch
     scheduler.schedule_discrete_state_update(t, binded_callback);
 }
 
-void ssc::solver::DiscreteSystem::callback(Scheduler &scheduler, ContinuousSystem *system)
+void ssc::solver::DiscreteSystem::callback(Scheduler &scheduler, ContinuousSystem& system)
 {
     const double tcurrent = scheduler.get_time();
     update_discrete_states(tcurrent, system);
@@ -21,7 +21,7 @@ void ssc::solver::DiscreteSystem::callback(Scheduler &scheduler, ContinuousSyste
     if (tnext > tcurrent) schedule_update(tnext, scheduler);
 }
 
-void ssc::solver::DiscreteSystem::initialize(Scheduler &scheduler, ContinuousSystem *system)
+void ssc::solver::DiscreteSystem::initialize(Scheduler &scheduler, ContinuousSystem& system)
 {
     callback(scheduler, system);
 }

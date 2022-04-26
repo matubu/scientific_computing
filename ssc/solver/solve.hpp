@@ -41,7 +41,7 @@ namespace ssc
                 const auto discrete_state_updaters = scheduler.get_discrete_state_updaters_to_run();
                 for (const auto state_updater : discrete_state_updaters)
                 {
-                    state_updater(scheduler, &sys);
+                    state_updater(scheduler, sys);
                 }
                 // Only call sys.dx_dt to update the force models before observing discrete states
                 // & forces: we're not interested in the value of dx/dt at this stage
@@ -104,7 +104,7 @@ namespace ssc
                         = scheduler.get_discrete_state_updaters_to_run();
                     for (const auto state_updater : discrete_state_updaters)
                     {
-                        state_updater(scheduler, &sys);
+                        state_updater(scheduler, sys);
                     }
                     scheduler.advance_to_next_time_event();
                     observer.observe_after_solver_step(sys, t, discrete_systems);

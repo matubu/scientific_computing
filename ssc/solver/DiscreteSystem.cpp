@@ -1,8 +1,8 @@
 #include "ssc/solver/DiscreteSystem.hpp"
 #include <cmath>
 
-ssc::solver::DiscreteSystem::DiscreteSystem(const double tstart_, const double dt_)
-    : tstart(tstart_), dt(dt_)
+ssc::solver::DiscreteSystem::DiscreteSystem(const double date_of_first_call_, const double dt_)
+    : date_of_first_call(date_of_first_call_), dt(dt_)
 {
 }
 
@@ -38,6 +38,6 @@ std::string ssc::solver::DiscreteSystem::get_name() const
 
 double ssc::solver::DiscreteSystem::get_date_of_next_update(const double current_time) const
 {
-    const int current_index = (int)std::round((current_time - tstart) / dt);
-    return tstart + (current_index + 1) * dt;
+    const int current_index = (int)std::round((current_time - date_of_first_call) / dt);
+    return date_of_first_call + (current_index + 1) * dt;
 }

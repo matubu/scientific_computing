@@ -37,9 +37,9 @@ namespace ssc
             while (scheduler.has_more_time_events())
             {
                 const double t = scheduler.get_time();
-                
+
                 const auto discrete_state_updaters = scheduler.get_discrete_state_updaters_to_run();
-                for (const auto state_updater : discrete_state_updaters)
+                for (const auto& state_updater : discrete_state_updaters)
                 {
                     state_updater(scheduler, sys);
                 }
@@ -102,7 +102,7 @@ namespace ssc
                     }
                     const auto discrete_state_updaters
                         = scheduler.get_discrete_state_updaters_to_run();
-                    for (const auto state_updater : discrete_state_updaters)
+                    for (const auto& state_updater : discrete_state_updaters)
                     {
                         state_updater(scheduler, sys);
                     }

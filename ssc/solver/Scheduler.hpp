@@ -59,7 +59,7 @@ namespace ssc
                 std::vector<Callback> updaters_to_run;
                 std::vector<std::pair<double, Callback> > remaining_updaters;
                 remaining_updaters.reserve(discrete_state_updaters.size());
-                for (const auto t_updater : discrete_state_updaters)
+                for (const auto& t_updater : discrete_state_updaters)
                 {
                     if (t_updater.first <= current_time) // Need to run updater
                     {

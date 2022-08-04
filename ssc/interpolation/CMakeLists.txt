@@ -4,26 +4,27 @@ PROJECT(interpolation)
 CONFIGURE_FILE(${F2C_INCLUDE_DIR}/f2c.h
                ${CMAKE_CURRENT_BINARY_DIR}/f2c.h COPYONLY)
 
-FILE(GLOB SRC Splines.cpp
-              NaturalSplines.cpp
-              ParabolicRunoutSplines.cpp
-              CubicRunoutSplines.cpp
-              VectorOfEquallySpacedNumbers.cpp
-              LinearInterpolation.cpp
-              PiecewiseConstant.cpp
-              ParabolicInterpolation.cpp
-              ParabolicCoefficients.cpp
-              LinearInterpolationVariableStep.cpp
-              ConstantStepInterpolator.cpp
-              Interpolator.cpp
-              SplineVariableStep.cpp
-              IndexFinder.cpp
-              VariableStepInterpolation.cpp
-              cubspl.c
-              dgtsv.c
-              xerbla.c
-              TwoDimensionalInterpolationVariableStep.cpp
-              )
+FILE(GLOB SRC
+    Splines.cpp
+    NaturalSplines.cpp
+    ParabolicRunoutSplines.cpp
+    CubicRunoutSplines.cpp
+    VectorOfEquallySpacedNumbers.cpp
+    LinearInterpolation.cpp
+    PiecewiseConstant.cpp
+    ParabolicInterpolation.cpp
+    ParabolicCoefficients.cpp
+    LinearInterpolationVariableStep.cpp
+    ConstantStepInterpolator.cpp
+    Interpolator.cpp
+    SplineVariableStep.cpp
+    IndexFinder.cpp
+    VariableStepInterpolation.cpp
+    cubspl.c
+    dgtsv.c
+    xerbla.c
+    TwoDimensionalInterpolationVariableStep.cpp
+    )
 
 SET(CMAKE_C_FLAGS "")
 IF(CMAKE_SIZEOF_VOID_P EQUAL 8) # If on a 64 bit machine

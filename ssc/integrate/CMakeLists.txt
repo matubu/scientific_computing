@@ -23,35 +23,34 @@ IF(CMAKE_SIZEOF_VOID_P EQUAL 8) # If on a 64 bit machine
     ENDIF()
 ENDIF()
 
-include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
-
-ADD_LIBRARY(${PROJECT_NAME}_object OBJECT TrapezoidalIntegration.cpp
-                                          Simpson.cpp
-                                          Integrator.cpp
-                                          QuadPack.cpp
-                                          GaussKronrod.cpp
-                                          Rectangle.cpp
-                                          Cumulate.cpp
-                                          d1mach.c
-                                          dqags.c
-                                          dqagse.c
-                                          dqelg.c
-                                          dqk21.c
-                                          dqpsrt.c
-                                          dqawoe.c
-                                          dqc25f.c
-                                          dqcheb.c
-                                          dqelg.c
-                                          dqk15w.c
-                                          dqpsrt.c
-                                          dqwgtf.c
-                                          dgtsl.c
-                                          ClenshawCurtis.cpp
-                                          ClenshawCurtisCosine.cpp
-                                          ClenshawCurtisSine.cpp
-                                          Filon.cpp
-                                          filon.c
-                                          Burcher.cpp
-                                          )
+ADD_LIBRARY(${PROJECT_NAME}_object OBJECT
+    TrapezoidalIntegration.cpp
+    Simpson.cpp
+    Integrator.cpp
+    QuadPack.cpp
+    GaussKronrod.cpp
+    Rectangle.cpp
+    Cumulate.cpp
+    d1mach.c
+    dqags.c
+    dqagse.c
+    dqelg.c
+    dqk21.c
+    dqpsrt.c
+    dqawoe.c
+    dqc25f.c
+    dqcheb.c
+    dqelg.c
+    dqk15w.c
+    dqpsrt.c
+    dqwgtf.c
+    dgtsl.c
+    ClenshawCurtis.cpp
+    ClenshawCurtisCosine.cpp
+    ClenshawCurtisSine.cpp
+    Filon.cpp
+    filon.c
+    Burcher.cpp
+    )
 
 ADD_SUBDIRECTORY(unit_tests)

@@ -83,8 +83,8 @@ ssc::integrate::GaussKronrod& ssc::integrate::GaussKronrod::operator=(const Gaus
 {
     if (this != &rhs)
     {
-        if (iwork) delete iwork;
-        if (work) delete work;
+        if (iwork) delete [] iwork;
+        if (work) delete [] work;
         iwork = new int[LIMIT];
         work = new double[LENW];
         for (size_t i = 0 ; i < LIMIT ; ++i)

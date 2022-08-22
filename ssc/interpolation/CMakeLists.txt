@@ -36,13 +36,5 @@ ENDIF()
 INCLUDE_DIRECTORIES(${SSC_INCLUDE_DIRS})
 INCLUDE_DIRECTORIES(SYSTEM ${CMAKE_CURRENT_BINARY_DIR})
 
-# Using C++ 2011
-# The -std=c++0x option causes g++ to go into 'strict ANSI' mode so it doesn't declare non-standard functions
-# (and _stricmp() is non-standard - it's just a version of strcmp() that's case-insensitive).
-# Use -std=gnu++0x instead.
-IF(NOT(MSVC))
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++0x")
-ENDIF()
-
 ADD_LIBRARY(${PROJECT_NAME}_object OBJECT ${SRC})
 ADD_SUBDIRECTORY(unit_tests)

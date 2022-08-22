@@ -3,6 +3,8 @@ PROJECT(ssc)
 
 SET(CMAKE_VERBOSE_MAKEFILE OFF)
 
+SET(CMAKE_CXX_STANDARD 11)
+
 OPTION(CREATE_INDIVIDUAL_LIBRARIES "Boolean used to build xdyn documentation" ON)
 
 #############################################################################

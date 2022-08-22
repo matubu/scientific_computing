@@ -7,9 +7,6 @@ FILE(GLOB SRC src/kahan_sumTest.cpp
               )
 # ------8<---------------------------------------------->8-----
 
-# Use C++11 to simplify tests
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++0x")
-
 # Include directories
 include_directories(inc)
 include_directories(${SSC_INCLUDE_DIRS})

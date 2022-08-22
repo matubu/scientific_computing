@@ -8,14 +8,6 @@ SET(SRC src/ConnectionMetadata.cpp
         src/WebSocketServer.cpp
         )
 
-# Using C++ 2011
-# The -std=c++0x option causes g++ to go into 'strict ANSI' mode so it doesn't declare non-standard functions
-# (and _stricmp() is non-standard - it's just a version of strcmp() that's case-insensitive).
-# Use -std=gnu++0x instead.
-IF(NOT(MSVC))
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++0x")
-ENDIF()
-
 SET(USE_BOOST_FOR_WEBSOCKETPP 1)
 IF(WIN32)
     IF(CMAKE_COMPILER_IS_GNUCC)

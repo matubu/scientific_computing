@@ -36,9 +36,9 @@ TEST_F(coriolis_and_centripetalTest, if_omega_is_zero_force_should_be_zero)
         const Eigen::Vector3d uvw = Eigen::Vector3d::Random();
         const Eigen::Vector3d pqr = Eigen::Vector3d::Constant(0);
         const Wrench F = coriolis_and_centripetal(a.random<Point>(), M, uvw, pqr);
-        ASSERT_NEAR(0.,(double)F.force(0),EPS);
-        ASSERT_NEAR(0.,(double)F.force(1),EPS);
-        ASSERT_NEAR(0.,(double)F.force(2),EPS);
+        ASSERT_NEAR(0., F.force(0), EPS);
+        ASSERT_NEAR(0., F.force(1), EPS);
+        ASSERT_NEAR(0., F.force(2), EPS);
     }
 }
 
@@ -50,9 +50,9 @@ TEST_F(coriolis_and_centripetalTest, if_M_is_identity_torque_should_be_zero)
         const Eigen::Vector3d uvw = Eigen::Vector3d::Random();
         const Eigen::Vector3d pqr = Eigen::Vector3d::Constant(0);
         const Wrench F = coriolis_and_centripetal(a.random<Point>(), M, uvw, pqr);
-        ASSERT_NEAR(0.,(double)F.torque(0),EPS);
-        ASSERT_NEAR(0.,(double)F.torque(1),EPS);
-        ASSERT_NEAR(0.,(double)F.torque(2),EPS);
+        ASSERT_NEAR(0., F.torque(0),EPS);
+        ASSERT_NEAR(0., F.torque(1),EPS);
+        ASSERT_NEAR(0., F.torque(2),EPS);
     }
 }
 
@@ -71,11 +71,11 @@ TEST_F(coriolis_and_centripetalTest, if_M_is_just_ones_force_and_torque_have_sim
         const double q = pqr(1);
         const double r = pqr(2);
         const double u_v_w_p_q_r = u+v+w+p+q+r;
-        ASSERT_NEAR(u_v_w_p_q_r*(r-q),(double)F.force(0),EPS);
-        ASSERT_NEAR(u_v_w_p_q_r*(p-r),(double)F.force(1),EPS);
-        ASSERT_NEAR(u_v_w_p_q_r*(q-p),(double)F.force(2),EPS);
-        ASSERT_NEAR(u_v_w_p_q_r*(w-v+r-q),(double)F.torque(0),EPS);
-        ASSERT_NEAR(u_v_w_p_q_r*(u-w+p-r),(double)F.torque(1),EPS);
-        ASSERT_NEAR(u_v_w_p_q_r*(v-u+q-p),(double)F.torque(2),EPS);
+        ASSERT_NEAR(u_v_w_p_q_r*(r-q), F.force(0),EPS);
+        ASSERT_NEAR(u_v_w_p_q_r*(p-r), F.force(1),EPS);
+        ASSERT_NEAR(u_v_w_p_q_r*(q-p), F.force(2),EPS);
+        ASSERT_NEAR(u_v_w_p_q_r*(w-v+r-q), F.torque(0),EPS);
+        ASSERT_NEAR(u_v_w_p_q_r*(u-w+p-r), F.torque(1),EPS);
+        ASSERT_NEAR(u_v_w_p_q_r*(v-u+q-p), F.torque(2),EPS);
     }
 }

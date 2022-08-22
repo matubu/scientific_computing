@@ -330,15 +330,15 @@ TEST_F(TransformTest, can_swap_the_from_and_to_frames_of_a_transform)
         ASSERT_DOUBLE_EQ(P1.x(), P2.x());
         ASSERT_DOUBLE_EQ(P1.y(), P2.y());
         ASSERT_DOUBLE_EQ(P1.z(), P2.z());
-        ASSERT_DOUBLE_EQ((double)M1(0,0), (double)M2(0,0));
-        ASSERT_DOUBLE_EQ((double)M1(0,1), (double)M2(0,1));
-        ASSERT_DOUBLE_EQ((double)M1(0,2), (double)M2(0,2));
-        ASSERT_DOUBLE_EQ((double)M1(1,0), (double)M2(1,0));
-        ASSERT_DOUBLE_EQ((double)M1(1,1), (double)M2(1,1));
-        ASSERT_DOUBLE_EQ((double)M1(1,2), (double)M2(1,2));
-        ASSERT_DOUBLE_EQ((double)M1(2,0), (double)M2(2,0));
-        ASSERT_DOUBLE_EQ((double)M1(2,1), (double)M2(2,1));
-        ASSERT_DOUBLE_EQ((double)M1(2,2), (double)M2(2,2));
+        ASSERT_DOUBLE_EQ(M1(0,0), M2(0,0));
+        ASSERT_DOUBLE_EQ(M1(0,1), M2(0,1));
+        ASSERT_DOUBLE_EQ(M1(0,2), M2(0,2));
+        ASSERT_DOUBLE_EQ(M1(1,0), M2(1,0));
+        ASSERT_DOUBLE_EQ(M1(1,1), M2(1,1));
+        ASSERT_DOUBLE_EQ(M1(1,2), M2(1,2));
+        ASSERT_DOUBLE_EQ(M1(2,0), M2(2,0));
+        ASSERT_DOUBLE_EQ(M1(2,1), M2(2,1));
+        ASSERT_DOUBLE_EQ(M1(2,2), M2(2,2));
         //! [TransformTest swap_example]
     }
 }

@@ -17,13 +17,17 @@ CSVFileReader::CSVFileReader(const char* filename, const size_t expected_nb_of_c
     std::ifstream file(filename);
     if (not (file.good()))
     {
-        THROW(__PRETTY_FUNCTION__,CSVFileReaderException, "Unable to open CSV file.");
+        std::stringstream ss;
+        ss << "Unable to open CSV file: " << std::string(filename) << std::endl;
+        THROW(__PRETTY_FUNCTION__,CSVFileReaderException, ss.str());
     }
 
     extract_column_titles(file, separator);
     if (titles.size() != expected_nb_of_columns)
     {
-        THROW(__PRETTY_FUNCTION__, CSVFileReaderException, "Invalid number of columns.");
+        std::stringstream ss;
+        ss << "Invalid number of columns. Expected " << expected_nb_of_columns << ", got " << titles.size() << std::endl;
+        THROW(__PRETTY_FUNCTION__, CSVFileReaderException, ss.str());
     }
     extract_values(file, separator);
     that_line = values.begin();

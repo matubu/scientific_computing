@@ -137,8 +137,8 @@ class Kinematics::Impl
 
         kinematics::Transform get(const std::string& from_frame, const std::string& to_frame)
         {
-            ds.check_in(__PRETTY_FUNCTION__);
             if (from_frame == to_frame) return kinematics::identity(from_frame);
+            ds.check_in(__PRETTY_FUNCTION__);
             try
             {
                 ds.check_out();
